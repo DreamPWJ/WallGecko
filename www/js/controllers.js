@@ -38,7 +38,31 @@ angular.module('starter.controllers', [])
         $rootScope.lat = data.position.getLat();
         $rootScope.lag = data.position.getLng();
         map.setZoom(16);
-        map.setCenter(lat, lag);
+        map.clearMap();  // 清除地图覆盖物
+        var markers = [{
+          icon: 'http://webapi.amap.com/theme/v1.3/markers/n/mark_b1.png',
+          position: [$rootScope.lag-0.0011,$rootScope.lat+0.0005]
+        }, {
+          icon: 'http://webapi.amap.com/theme/v1.3/markers/n/mark_b2.png',
+          position: [$rootScope.lag+0.002, $rootScope.lat+0.002]
+        }, {
+          icon: 'http://webapi.amap.com/theme/v1.3/markers/n/mark_b3.png',
+          position: [$rootScope.lag-0.002, $rootScope.lat-0.002]
+        }, {
+          icon: 'http://webapi.amap.com/theme/v1.3/markers/n/mark_b4.png',
+          position: [$rootScope.lag-0.001, $rootScope.lat-0.001]
+        }, {
+          icon: 'http://webapi.amap.com/theme/v1.3/markers/n/mark_b5.png',
+          position: [$rootScope.lag+0.002, $rootScope.lat-0.002]
+        }];
+        // 添加一些分布不均的点到地图上,地图上添加三个点标记，作为参照
+        markers.forEach(function (marker) {
+          new AMap.Marker({
+            map: map,
+            icon: marker.icon,
+            position: [marker.position[0], marker.position[1]]
+          });
+        });
 
       }
 
@@ -51,4 +75,12 @@ angular.module('starter.controllers', [])
     $rootScope.fixLocationCommon("gaode-map");
   }
 )
+  .controller('WorklistCtrl', function ($scope, $ionicPopup) {
 
+  })
+  .controller('AccountCtrl', function ($scope, $ionicPopup) {
+
+  })
+  .controller('LoginCtrl', function ($scope, $ionicPopup) {
+
+  })
