@@ -1,0 +1,24 @@
+<ion-view>
+  <ion-nav-title>
+    <h1 class="title icon ion-android-list"> 客户详情</h1>
+  </ion-nav-title>
+  <ion-nav-buttons side="right">
+    <a ng-href="#/app/guestlist" class="button button-clear "> {{gueststate}}</a>
+  </ion-nav-buttons>
+        <ion-content class="stable-bg" overflow-scroll="false">
+          <div class="list">
+            <a  class="item ">
+              <h2>联系人名称   <span class="item-note">{{guestname}}</span></h2>
+
+            </a>
+            <a class="item ">
+              <h2>联系方式      <span class="item-note">138000000000</span></h2>
+            </a>
+            <a  class="item ">
+              <h2>联系地址</h2>
+              <p>xx市xx街xx楼</p>
+            </a>
+          </div>
+        </ion-content>
+
+</ion-view>

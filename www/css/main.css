@@ -1,5 +1,14 @@
-#gaode-map{
+
+#logo{
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  vertical-align: text-top;
+}
+#gaode-map,#gaode-map-1{
   width: 100%;
   height: calc(100% + 1rem);
 
 }
+

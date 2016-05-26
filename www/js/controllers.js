@@ -78,9 +78,26 @@ angular.module('starter.controllers', [])
   .controller('WorklistCtrl', function ($scope, $ionicPopup) {
 
   })
+  .controller('WorklistDetailsCtrl', function ($scope, $ionicPopup,$rootScope) {
+    $scope.locationlist=function(){
+      $scope.cartype=1;
+    }
+    $scope.locationmap=function(){
+      $scope.cartype=2;
+      //调用地图定位
+      $rootScope.fixLocationCommon("gaode-map-1");
+    }
+  })
   .controller('AccountCtrl', function ($scope, $ionicPopup) {
 
   })
   .controller('LoginCtrl', function ($scope, $ionicPopup) {
 
+  })
+  .controller('GuestListCtrl', function ($scope, $ionicPopup) {
+
+  })
+  .controller('GuestListDetailsCtrl', function ($scope, $ionicPopup,$stateParams) {
+        $scope.guestname=$stateParams.guestname;
+        $scope.gueststate=$stateParams.gueststate;
   })

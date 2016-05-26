@@ -79,6 +79,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','s
         }
       }
     })
+
+    .state('tab.worklistdetails', {
+      url: '/worklistdetails',
+      views: {
+        'tab-worklist': {
+          templateUrl: 'templates/worklistdetails.html',
+          controller: 'WorklistDetailsCtrl'
+        }
+      }
+    })
     .state('tab.account', {
       url: '/account',
       views: {
@@ -95,6 +105,26 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','s
         'tab-account': {
           templateUrl: 'templates/login.html',
           controller: 'LoginCtrl'
+        }
+      }
+    })
+
+    .state('tab.guestlist', {
+      url: '/guestlist',
+      views: {
+        'tab-account': {
+          templateUrl: 'templates/guestlist.html',
+          controller: 'GuestListCtrl'
+        }
+      }
+    })
+
+    .state('tab.guestlistdetails', {
+      url: '/guestlistdetails/:guestname/:gueststate',
+      views: {
+        'tab-account': {
+          templateUrl: 'templates/guestlistdetails.html',
+          controller: 'GuestListDetailsCtrl'
         }
       }
     })
