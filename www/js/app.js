@@ -70,6 +70,34 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','s
       }
     }
   })
+    .state('tab.worklist', {
+      url: '/worklist',
+      views: {
+        'tab-worklist': {
+          templateUrl: 'templates/worklist.html',
+          controller: 'WorklistCtrl'
+        }
+      }
+    })
+    .state('tab.account', {
+      url: '/account',
+      views: {
+        'tab-account': {
+          templateUrl: 'templates/account.html',
+          controller: 'AccountCtrl'
+        }
+      }
+    })
+
+    .state('tab.login', {
+      url: '/login',
+      views: {
+        'tab-account': {
+          templateUrl: 'templates/login.html',
+          controller: 'LoginCtrl'
+        }
+      }
+    })
   ;
 
   // if none of the above states are matched, use this as the fallback

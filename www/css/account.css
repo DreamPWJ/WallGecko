@@ -1,0 +1,29 @@
+.account-login{
+  height: 10rem;
+}
+
+ .icon-account{
+   padding-top: 0.5rem;
+   padding-right: 1.2rem;
+  font-size: 1.8rem;
+}
+
+.icon-login .icon{
+  font-size: 4rem;
+}
+
+.icon-login span{
+  display: inline-block;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  border: 1px solid #ffffff;
+}
+
+.icon-login p{
+  text-decoration: none;
+}
+
+.list .icon{
+  color: #777;
+}
