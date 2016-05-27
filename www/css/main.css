@@ -1,9 +1,10 @@
 
 #logo{
   display: inline-block;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.6rem;
+  height: 1.6rem;
   border-radius: 50%;
+  border: 2px solid #ffffff;
   vertical-align: text-top;
 }
 #gaode-map,#gaode-map-1{
