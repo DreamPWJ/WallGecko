@@ -81,7 +81,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','s
     })
 
     .state('tab.worklistdetails', {
-      url: '/worklistdetails',
+      url: '/worklistdetails/:workstate',
       views: {
         'tab-worklist': {
           templateUrl: 'templates/worklistdetails.html',

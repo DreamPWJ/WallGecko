@@ -78,7 +78,8 @@ angular.module('starter.controllers', [])
   .controller('WorklistCtrl', function ($scope, $ionicPopup) {
 
   })
-  .controller('WorklistDetailsCtrl', function ($scope, $ionicPopup,$rootScope) {
+  .controller('WorklistDetailsCtrl', function ($scope, $ionicPopup,$rootScope,$stateParams) {
+    $scope.workstate=$stateParams.workstate;
     $scope.locationlist=function(){
       $scope.cartype=1;
     }
