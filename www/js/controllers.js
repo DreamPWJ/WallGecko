@@ -1,6 +1,11 @@
 angular.module('starter.controllers', [])
 
-  .controller('MainCtrl', function ($scope, $ionicPopup, $rootScope) {
+  .controller('MainCtrl', function ($scope, $state, $ionicPopup, $rootScope, $ionicModal,$stateParams) {
+    //用户类型 销售 维修
+    $rootScope.usertype=$stateParams.usertype;
+     if( $rootScope.usertype==2){
+       $state.go("tab.worklist")
+     }
     // 一个提示对话框
     $rootScope.showAlert = function (title, template) {
       var alertPopup = $ionicPopup.alert({
@@ -40,19 +45,19 @@ angular.module('starter.controllers', [])
         map.setZoom(16);
         map.clearMap();  // 清除地图覆盖物
         var markers = [{
-          icon: 'http://webapi.amap.com/theme/v1.3/markers/n/mark_b1.png',
+          icon: 'img/baner.png',
           position: [$rootScope.lag-0.0011,$rootScope.lat+0.0005]
         }, {
-          icon: 'http://webapi.amap.com/theme/v1.3/markers/n/mark_b2.png',
+          icon: 'img/baner.png',
           position: [$rootScope.lag+0.002, $rootScope.lat+0.002]
         }, {
-          icon: 'http://webapi.amap.com/theme/v1.3/markers/n/mark_b3.png',
+          icon: 'img/baner.png',
           position: [$rootScope.lag-0.002, $rootScope.lat-0.002]
         }, {
-          icon: 'http://webapi.amap.com/theme/v1.3/markers/n/mark_b4.png',
+          icon: 'img/baner.png',
           position: [$rootScope.lag-0.001, $rootScope.lat-0.001]
         }, {
-          icon: 'http://webapi.amap.com/theme/v1.3/markers/n/mark_b5.png',
+          icon: 'img/baner.png',
           position: [$rootScope.lag+0.002, $rootScope.lat-0.002]
         }];
         // 添加一些分布不均的点到地图上,地图上添加三个点标记，作为参照
@@ -73,6 +78,15 @@ angular.module('starter.controllers', [])
     }
     //调用地图定位
     $rootScope.fixLocationCommon("gaode-map");
+
+    //点击搜索跳转搜索modal
+    $ionicModal.fromTemplateUrl('templates/search.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      $scope.modal = modal;
+    });
+
   }
 )
   .controller('WorklistCtrl', function ($scope, $ionicPopup) {
@@ -102,3 +116,8 @@ angular.module('starter.controllers', [])
         $scope.guestname=$stateParams.guestname;
         $scope.gueststate=$stateParams.gueststate;
   })
+  .controller('SearchCtrl', function ($scope) {
+
+  })
+
+

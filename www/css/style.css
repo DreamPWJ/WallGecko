@@ -50,3 +50,7 @@
 .float-left{
   float:left;
 }
+
+.white-bg{
+  background-color: #ffffff;
+}

@@ -4,15 +4,15 @@ Each tab's child <ion-nav-view> directive will have its own
 navigation history that also transitions its views in and out.
 -->
 <ion-tabs class="tabs-icon-top tabs-color-active-balanced">
-
   <!-- 地图 Tab -->
-  <ion-tab title="地图" icon-off="ion-ios-navigate-outline" icon-on="ion-ios-navigate" href="#/tab/main">
+
+  <ion-tab  title="地图"  class="{{usertype==2?'tab-hidden':''}}"   icon-off="ion-ios-navigate-outline"  icon-on="ion-ios-navigate" href="#/tab/main">
     <ion-nav-view name="tab-main"></ion-nav-view>
   </ion-tab>
 
   <!-- 工单 Tab -->
-  <ion-tab title="工单" icon-off="ion-ios-list-outline" icon-on="ion-ios-list" href="#/tab/worklist">
-    <ion-nav-view name="tab-worklist"></ion-nav-view>
+  <ion-tab    title="工单"   class="{{usertype==1?'tab-hidden':''}}"   icon-off="ion-ios-list-outline " badge-style="badge-assertive"  badge="3" icon-on="ion-ios-list" href="#/tab/worklist">
+    <ion-nav-view  name="tab-worklist"></ion-nav-view>
   </ion-tab>
 
   <!--我的 Tab -->
