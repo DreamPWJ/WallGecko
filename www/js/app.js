@@ -5,33 +5,33 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','starter.config'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'starter.config','ngCordova'])
 
-.run(function($ionicPlatform) {
-  $ionicPlatform.ready(function() {
+  .run(function ($ionicPlatform) {
+    $ionicPlatform.ready(function () {
 
-    //hide splash immediately 加载完成立刻隐藏启动画面
-    if (navigator && navigator.splashscreen) {
-      navigator.splashscreen.hide();
-    }
+      //hide splash immediately 加载完成立刻隐藏启动画面
+      if (navigator && navigator.splashscreen) {
+        navigator.splashscreen.hide();
+      }
 
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
-    if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-      cordova.plugins.Keyboard.disableScroll(true);
+      // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+      // for form inputs)
+      if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
+        cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+        cordova.plugins.Keyboard.disableScroll(true);
 
-    }
-    if (window.StatusBar) {
-      //状态栏颜色设置
-      // org.apache.cordova.statusbar required
-      StatusBar.overlaysWebView(false);
-      StatusBar.backgroundColorByHexString("#33cd5f");
-    }
-  });
-})
+      }
+      if (window.StatusBar) {
+        //状态栏颜色设置
+        // org.apache.cordova.statusbar required
+        StatusBar.overlaysWebView(false);
+        StatusBar.backgroundColorByHexString("#33cd5f");
+      }
+    });
+  })
 
-.config(function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
+  .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
     $ionicConfigProvider.platform.ios.tabs.style('standard');
     $ionicConfigProvider.platform.ios.tabs.position('bottom');
     $ionicConfigProvider.platform.android.tabs.style('standard');
@@ -46,61 +46,93 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','s
     $ionicConfigProvider.platform.ios.views.transition('ios');
     $ionicConfigProvider.platform.android.views.transition('android');
 
-  // Ionic uses AngularUI Router which uses the concept of states
-  // Learn more here: https://github.com/angular-ui/ui-router
-  // Set up the various states which the app can be in.
-  // Each state's controller can be found in controllers.js
-  $stateProvider
+    // Ionic uses AngularUI Router which uses the concept of states
+    // Learn more here: https://github.com/angular-ui/ui-router
+    // Set up the various states which the app can be in.
+    // Each state's controller can be found in controllers.js
+    $stateProvider
 
-  // setup an abstract state for the tabs directive
-    .state('tab', {
-    url: '/tab',
-    abstract: true,
-    templateUrl: 'templates/tabs.html'
-  })
+      // setup an abstract state for the tabs directive
+      .state('tab', {
+        url: '/tab',
+        abstract: true,
+        templateUrl: 'templates/tabs.html',
+      })
 
-  // Each tab has its own nav history stack:
+      // Each tab has its own nav history stack:
 
-  .state('tab.main', {
-    url: '/main',
-    views: {
-      'tab-main': {
-        templateUrl: 'templates/main.html',
-        controller: 'MainCtrl'
-      }
-    }
-  })
-    .state('tab.worklist', {
-      url: '/worklist',
-      views: {
-        'tab-worklist': {
-          templateUrl: 'templates/worklist.html',
-          controller: 'WorklistCtrl'
+      .state('tab.main', {
+        url: '/main/:usertype',
+        views: {
+          'tab-main': {
+            templateUrl: 'templates/main.html',
+            controller: 'MainCtrl'
+          }
         }
-      }
-    })
-    .state('tab.account', {
-      url: '/account',
-      views: {
-        'tab-account': {
-          templateUrl: 'templates/account.html',
-          controller: 'AccountCtrl'
+      })
+      .state('tab.worklist', {
+        url: '/worklist',
+        views: {
+          'tab-worklist': {
+            templateUrl: 'templates/worklist.html',
+            controller: 'WorklistCtrl'
+          }
         }
-      }
-    })
+      })
 
-    .state('tab.login', {
-      url: '/login',
-      views: {
-        'tab-account': {
-          templateUrl: 'templates/login.html',
-          controller: 'LoginCtrl'
+      .state('tab.worklistdetails', {
+        url: '/worklistdetails/:workstate',
+        views: {
+          'tab-worklist': {
+            templateUrl: 'templates/worklistdetails.html',
+            controller: 'WorklistDetailsCtrl'
+          }
         }
-      }
-    })
-  ;
+      })
+      .state('tab.account', {
+        url: '/account',
+        views: {
+          'tab-account': {
+            templateUrl: 'templates/account.html',
+            controller: 'AccountCtrl'
+          }
+        }
+      })
 
-  // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/main');
+      .state('login', {
+        url: '/login',
+        templateUrl: 'templates/login.html',
+        controller: 'LoginCtrl'
+      })
 
-});
+      .state('tab.guestlist', {
+        url: '/guestlist',
+        views: {
+          'tab-account': {
+            templateUrl: 'templates/guestlist.html',
+            controller: 'GuestListCtrl'
+          }
+        }
+      })
+
+      .state('tab.guestlistdetails', {
+        url: '/guestlistdetails/:guestname/:gueststate',
+        views: {
+          'tab-account': {
+            templateUrl: 'templates/guestlistdetails.html',
+            controller: 'GuestListDetailsCtrl'
+          }
+        }
+      })
+
+      .state('search', {
+        url: '/search',
+        templateUrl: 'templates/search.html',
+        controller: 'SearchCtrl'
+      })
+    ;
+
+    // if none of the above states are matched, use this as the fallback
+    $urlRouterProvider.otherwise('/login');
+
+  });

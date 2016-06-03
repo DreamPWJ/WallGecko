@@ -4,7 +4,7 @@
   </ion-nav-title>
   <ion-content overflow-scroll="false">
     <form>
-      <div class="list">
+      <div class="list card">
         <label class="item item-input">
           <span class="input-label icon ion-person"> 账号</span>
           <input type="text">
@@ -16,9 +16,9 @@
 <!--        <ion-checkbox class="checkbox-balanced">
           记住密码
         </ion-checkbox>-->
-        <div class="item item-borderless">
-          <button class="button button-block button-balanced" ng-click="">登录</button>
-
+        <div class="item">
+          <a class="button button-block button-balanced" ng-href="#/tab/main/1">登录(销售)</a>
+          <a class="button button-block button-energized" ng-href="#/tab/main/2">登录(维修)</a>
         </div>
       </div>
     </form>

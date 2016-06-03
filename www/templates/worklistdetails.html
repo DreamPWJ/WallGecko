@@ -1,0 +1,33 @@
+<ion-view>
+  <ion-nav-title>
+    <h1 class="title icon ion-ios-list"> 详情({{workstate}})</h1>
+  </ion-nav-title>
+  <ion-nav-buttons side="right">
+    <a ng-href="#/app/worklist" class="button button-clear "> 关闭工单</a>
+  </ion-nav-buttons>
+  <div class="bar bar-subheader">
+    <div class="button-bar">
+      <a ng-click="locationlist()" class="button" ng-class="{true:'button-balanced',false:'button-stable'}[cartype==null||cartype==1]">位置列表</a>
+      <a ng-click="locationmap()" class="button" ng-class="{true:'button-balanced',false:'button-stable'}[cartype==2]">位置地图</a>
+    </div>
+  </div>
+  <ion-content id="worklistdetails" class="stable-bg has-subheader" overflow-scroll="false"  scroll="false">
+
+    <div class="list padding-top" ng-show="cartype==null||cartype==1">
+      <a  class="item ">
+
+        <h2>兴业楼盘   </h2>
+        <p>xx市xx街xx楼 <span class="item-note"> <i class="icon ion-camera" ng-show="workstate=='上画工单'"> 上传图片</i>   <i class="icon ion-checkmark-round "> 完成维修</i> </span> </p>
+
+      </a>
+      <a  class="item ">
+        <h2>安泰楼盘</h2>
+        <p>xx市xx街xx楼  <span class="item-note "> <i class="icon ion-camera icon-balanced" ng-show="workstate=='上画工单'"> 图片已上传</i>    <i class="icon ion-checkmark-round icon-balanced"> 已完成</i> </span></p>
+
+      </a>
+    </div>
+      <div id="gaode-map-1"  ng-show="cartype==2">
+      </div>
+  </ion-content>
+
+</ion-view>
