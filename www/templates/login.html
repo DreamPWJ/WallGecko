@@ -3,25 +3,22 @@
     <h1 class="title icon ion-person"> 登录</h1>
   </ion-nav-title>
   <ion-content overflow-scroll="false">
-    <form>
+
       <div class="list card">
         <label class="item item-input">
           <span class="input-label icon ion-person"> 账号</span>
-          <input type="text">
+          <input type="text" ng-model="user.username">
         </label>
         <label class="item item-input">
-          <span class="input-label icon ion-unlocked"> 密码</span>
-          <input type="password">
+          <span class="input-label icon ion-unlocked" > 密码</span>
+          <input type="password" ng-model="user.password">
         </label>
-<!--        <ion-checkbox class="checkbox-balanced">
-          记住密码
-        </ion-checkbox>-->
+
         <div class="item">
-          <a class="button button-block button-balanced" ng-href="#/tab/main/1">登录(销售)</a>
-          <a class="button button-block button-energized" ng-href="#/tab/main/2">登录(维修)</a>
+          <button class="button button-block button-balanced" ng-click="loginSubmit()">登录</button>
         </div>
       </div>
-    </form>
+
   </ion-content>
 </ion-view>
 
