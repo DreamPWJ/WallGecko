@@ -113,39 +113,31 @@ angular.module('starter.controllers', [])
 
     $scope.user = {};//提前定义用户对象
     $scope.loginSubmit = function () {
-/*       var postData={
-         username:$scope.user.username,
-         password:'202cb962ac59075b964b07152d234b70'
-       }
-        $http.post(WallCecko.api+'/mobile/user/login',postData, {headers:{
-        'Content-Type' : 'application/x-www-form-urlencoded'}}).success(function (response) {
-       alert(response)
-        }).error(function () {
-          alert("失败了");
-        })*/
-      $http({
-        method:'POST',
-        url:WallCecko.api+'/mobile/user/login',
-        data:{
-          username:$scope.user.username,
-          password:'202cb962ac59075b964b07152d234b70'
-        }
-      }).success(function (data) {
 
+      $http({
+          method: 'POST',
+          url: WallCecko.api + '/mobile/user/login',
+          data: {
+            username: '%e9%94%801',
+            password: '202cb962ac59075b964b07152d234b70'
+          },
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+                  },
+        transformRequest:function(obj){
+          var str=[];
+          for(var p in obj){
+            str.push(encodeURIComponent(p)+"="+encodeURIComponent(obj[p]))
+          }
+          return str.join("&")
+        }
+        }
+      ).success(function (data) {
+           alert(data);
       }).error(function () {
         $rootScope.showAlert("壁虎漫步", "登录失败!");
       })
- /*     $http({
-        method:'GET',
-        url:WallCecko.api+'/mobile/sales/customers',
-        params:{
-          token:'kF5Z5FQ0NSqhT7BWB6YzZTjAUkk0Z4fxN+73cJhy6yp+DhizFHOQlkn+vUn133+46NIj/gwGGD48ugq6ohqbR4pYfmpAPkTXxNiGR9AynLMSRuyoo2BIdcJ6bdcbbyHzYAXOgEtVxVovyF7ViMKz2JzrIro1EDqnIJQW6rbl72o='
-        },
-      }).success(function (data) {
-         alert("success="+data);
-      }).error(function () {
-        $rootScope.showAlert("壁虎漫步", "登录失败!");
-      })*/
+
     }
 
   })
