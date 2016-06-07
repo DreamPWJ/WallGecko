@@ -2,10 +2,10 @@ angular.module('starter.controllers', [])
 
   .controller('MainCtrl', function ($scope, $state, $rootScope, $ionicModal, $stateParams) {
       //用户类型 销售 维修
-/*      $rootScope.usertype = $stateParams.usertype;
-      if ($rootScope.usertype == 2) {
-        $state.go("tab.worklist")
-      }*/
+      /*      $rootScope.usertype = $stateParams.usertype;
+       if ($rootScope.usertype == 2) {
+       $state.go("tab.worklist")
+       }*/
 
 
       //定位地图复用方法
@@ -83,7 +83,7 @@ angular.module('starter.controllers', [])
   .controller('WorklistCtrl', function ($scope) {
 
   })
-  .controller('WorklistDetailsCtrl', function ($scope,  $rootScope, $stateParams) {
+  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, $stateParams) {
     $scope.workstate = $stateParams.workstate;
     $scope.locationlist = function () {
       $scope.cartype = 1;
@@ -97,13 +97,13 @@ angular.module('starter.controllers', [])
   .controller('AccountCtrl', function ($scope) {
 
   })
-  .controller('LoginCtrl', function ($scope,$rootScope,$ionicPopup,WallCecko, $http ) {
+  .controller('LoginCtrl', function ($scope, $rootScope, $ionicPopup, WallCecko, $http) {
     // 一个提示对话框
     $rootScope.showAlert = function (title, template) {
       var alertPopup = $ionicPopup.alert({
         title: title,
         template: template,
-        okText:'确定',
+        okText: '确定',
         okType: 'button-balanced'
       });
       alertPopup.then(function (res) {
@@ -114,7 +114,7 @@ angular.module('starter.controllers', [])
     $scope.user = {};//提前定义用户对象
     $scope.loginSubmit = function () {
 
-      $http({
+      var  promise=$http({
           method: 'POST',
           url: WallCecko.api + '/mobile/user/login',
           data: {
@@ -123,21 +123,34 @@ angular.module('starter.controllers', [])
           },
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
-                  },
-        transformRequest:function(obj){
-          var str=[];
-          for(var p in obj){
-            str.push(encodeURIComponent(p)+"="+encodeURIComponent(obj[p]))
+          },
+          transformRequest: function (obj) {
+            var str = [];
+            for (var p in obj) {
+              str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]))
+            }
+            return str.join("&")
           }
-          return str.join("&")
         }
-        }
-      ).success(function (data) {
-           alert(data);
-      }).error(function () {
+      )
+      promise.success(function (data) {
+        localStorage.setItem('token', data.token);
+      })
+      promise.error(function () {
         $rootScope.showAlert("壁虎漫步", "登录失败!");
       })
+      promise.then(function(){
+        $http({
+            method: 'GET',
+            url: WallCecko.api +'/mobile/user/me',
+            params: {
+              token: localStorage.getItem('token'),
+            }
+          }).success(function(data){
 
+           console.log(data)
+        })
+      })
     }
 
   })
