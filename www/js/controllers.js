@@ -1,11 +1,7 @@
 angular.module('starter.controllers', [])
 
   .controller('MainCtrl', function ($scope, $state, $rootScope, $ionicModal, $stateParams) {
-      //用户类型 销售 维修
-      /*      $rootScope.usertype = $stateParams.usertype;
-       if ($rootScope.usertype == 2) {
-       $state.go("tab.worklist")
-       }*/
+
 
 
       //定位地图复用方法
