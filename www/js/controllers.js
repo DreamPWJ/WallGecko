@@ -97,7 +97,7 @@ angular.module('starter.controllers', [])
   .controller('AccountCtrl', function ($scope) {
 
   })
-  .controller('LoginCtrl', function ($scope, $rootScope, $ionicPopup, WallCecko, $http) {
+  .controller('LoginCtrl', function ($scope, $rootScope, $ionicPopup, WallCecko, $http, encodingService) {
     // 一个提示对话框
     $rootScope.showAlert = function (title, template) {
       var alertPopup = $ionicPopup.alert({
@@ -113,13 +113,12 @@ angular.module('starter.controllers', [])
 
     $scope.user = {};//提前定义用户对象
     $scope.loginSubmit = function () {
-
-      var  promise=$http({
+      var promise = $http({
           method: 'POST',
           url: WallCecko.api + '/mobile/user/login',
           data: {
-            username: '%e9%94%801',
-            password: '202cb962ac59075b964b07152d234b70'
+            username: encodingService.encodingUTF8('销1'),
+            password: encodingService.md5('123')
           },
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -139,16 +138,16 @@ angular.module('starter.controllers', [])
       promise.error(function () {
         $rootScope.showAlert("壁虎漫步", "登录失败!");
       })
-      promise.then(function(){
+      promise.then(function () {
         $http({
-            method: 'GET',
-            url: WallCecko.api +'/mobile/user/me',
-            params: {
-              token: localStorage.getItem('token'),
-            }
-          }).success(function(data){
+          method: 'GET',
+          url: WallCecko.api + '/mobile/user/me',
+          params: {
+            token: localStorage.getItem('token'),
+          }
+        }).success(function (data) {
 
-           console.log(data)
+          console.log(data)
         })
       })
     }
