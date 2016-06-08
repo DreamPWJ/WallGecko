@@ -1,12 +1,6 @@
 angular.module('starter.controllers', [])
 
   .controller('MainCtrl', function ($scope, $state, $rootScope, $ionicModal, $stateParams) {
-      //用户类型 销售 维修
-      /* $rootScope.usertype = $stateParams.usertype;
-       if ($rootScope.usertype == 2) {
-       $state.go("tab.worklist")
-       }*/
-
 
       //定位地图复用方法
       $rootScope.fixLocationCommon = function (id) {
@@ -97,7 +91,7 @@ angular.module('starter.controllers', [])
   .controller('AccountCtrl', function ($scope) {
 
   })
-  .controller('LoginCtrl', function ($scope, $rootScope, $ionicPopup, WallCecko, $http, encodingService) {
+  .controller('LoginCtrl', function ($scope, $rootScope, $ionicPopup, WallCecko, $http, encodingService,$state) {
     // 一个提示对话框
     $rootScope.showAlert = function (title, template) {
       var alertPopup = $ionicPopup.alert({
@@ -117,7 +111,7 @@ angular.module('starter.controllers', [])
           method: 'POST',
           url: WallCecko.api + '/mobile/user/login',
           data: {
-            username: encodingService.encodingUTF8('销1'),
+            username: '修1',
             password: encodingService.md5('123')
           },
           headers: {
@@ -143,11 +137,16 @@ angular.module('starter.controllers', [])
           method: 'GET',
           url: WallCecko.api + '/mobile/user/me',
           params: {
-            token: localStorage.getItem('token'),
+            token: encodeURI(localStorage.getItem('token')),
           }
         }).success(function (data) {
-
-          console.log(data)
+               console.log(data);
+               //用户类型 销售 维修
+              if(data.role=='sales'){
+                $state.go("tab.main")
+              }else  if(data.role=='operation'){
+                $state.go("tab.worklist")
+              }
         })
       })
     }
