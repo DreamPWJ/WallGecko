@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-  .controller('MainCtrl', function ($scope, $state, $rootScope, $ionicModal, $stateParams) {
+  .controller('MainCtrl', function ($scope, $state, $rootScope, $ionicModal, $stateParams,$http,WallCecko) {
 
       //定位地图复用方法
       $rootScope.fixLocationCommon = function (id) {
@@ -25,34 +25,54 @@ angular.module('starter.controllers', [])
         });
         //解析定位结果
         function onComplete(data) {
-          $rootScope.lat = data.position.getLat();
           $rootScope.lag = data.position.getLng();
+          $rootScope.lat = data.position.getLat();
           map.setZoom(16);
           map.clearMap();  // 清除地图覆盖物
-          var markers = [{
-            icon: 'img/baner.png',
-            position: [$rootScope.lag - 0.0011, $rootScope.lat + 0.0005]
-          }, {
-            icon: 'img/baner.png',
-            position: [$rootScope.lag + 0.002, $rootScope.lat + 0.002]
-          }, {
-            icon: 'img/baner.png',
-            position: [$rootScope.lag - 0.002, $rootScope.lat - 0.002]
-          }, {
-            icon: 'img/baner.png',
-            position: [$rootScope.lag - 0.001, $rootScope.lat - 0.001]
-          }, {
-            icon: 'img/baner.png',
-            position: [$rootScope.lag + 0.002, $rootScope.lat - 0.002]
-          }];
-          // 添加一些分布不均的点到地图上,地图上添加三个点标记，作为参照
-          markers.forEach(function (marker) {
-            new AMap.Marker({
-              map: map,
-              icon: marker.icon,
-              position: [marker.position[0], marker.position[1]]
-            });
-          });
+          var promise=$http({
+            method: 'GET',
+            url: WallCecko.api + '/mobile/map/cells',
+            params: {
+              q:'',
+              city:'',
+              token: encodeURI(localStorage.getItem('token')),
+              longitude:$rootScope.lag,
+              latitude:$rootScope.lat
+            }
+          })
+          promise.success(function(data){
+            console.log(data);
+             $rootScope.city=data.city;
+            $scope.cell_list=data.cell_list;
+
+          })
+
+          promise.then(function(){
+            var markers = [
+            ]
+            for(var i= 0,len= $scope.cell_list.length;i<len;i++){
+              markers.push({lnglats:[$scope.cell_list[i].longitude,$scope.cell_list[i].latitude],name:$scope.cell_list[i].name,address:$scope.cell_list[i].address})
+            }
+
+            var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
+
+            for (var i = 0, marker; i < markers.length; i++) {
+              var marker = new AMap.Marker({
+                position: markers[i].lnglats,
+                map: map
+              });
+              marker.content = '<strong>名称 :'+markers[i].name+' </strong><p>地址 : '+markers[i].address+'</p>';
+              marker.on('click', markerClick);
+              marker.emit('click', {target: marker});
+            }
+            function markerClick(e) {
+              infoWindow.setContent(e.target.content);
+              infoWindow.open(map, e.target.getPosition());
+            }
+            map.setFitView();
+
+          })
+
 
         }
 
@@ -74,8 +94,18 @@ angular.module('starter.controllers', [])
 
     }
   )
-  .controller('WorklistCtrl', function ($scope) {
+  .controller('WorklistCtrl', function ($scope,WallCecko,$http) {
+    var promise=$http({
+      method: 'GET',
+      url: WallCecko.api + '/mobile/operation/workorders',
+      params: {
+        token: encodeURI(localStorage.getItem('token')),
+      }
+    })
+    promise.success(function(data){
+      $scope.workorder_list=data.workorder_list;
 
+    })
   })
   .controller('WorklistDetailsCtrl', function ($scope, $rootScope, $stateParams) {
     $scope.workstate = $stateParams.workstate;
