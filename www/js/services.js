@@ -302,7 +302,7 @@ angular.module('starter.services', [])
       }
     }
   })
-  .service('mapService', function ($scope, $rootScope, $http, WallCecko) {
+  .service('mapService', function () {
     return {
       //定位地图复用方法
       fixLocationCommon: function (id, url) {
