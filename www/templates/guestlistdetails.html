@@ -6,19 +6,29 @@
     <a  class="button button-clear "> {{gueststate}}</a>
   </ion-nav-buttons>
         <ion-content class="stable-bg" overflow-scroll="false">
-          <div class="list">
-            <a  class="item ">
-              <h2>联系人名称   <span class="item-note">{{guestname}}</span></h2>
-
-            </a>
-            <a class="item ">
-              <h2>联系方式      <span class="item-note">138000000000</span></h2>
-            </a>
-            <a  class="item ">
-              <h2>联系地址</h2>
-              <p>xx市xx街xx楼</p>
-            </a>
-          </div>
+          <ul class="list">
+            <li  class="item ">
+              <h2>客户编号   <span class="item-note">{{customerid}}</span></h2>
+            </li>
+            <li  class="item ">
+              <h2>客户名称   <span class="item-note">{{guestname}}</span></h2>
+            </li>
+            <li class="item ">
+              <h2>联系电话      <span class="item-note">{{phone}}</span></h2>
+            </li>
+            <li class="item ">
+              <h2>客户介绍      <span class="item-note">{{description}}</span></h2>
+            </li>
+            <li class="item ">
+              <h2>拜访次数      <span class="item-note">{{count}}</span></h2>
+            </li>
+            <li  class="item ">
+              <h2>客户地址</h2>
+              <p>{{address}}</p>
+            </li>
+          </ul>
+          <button class="button button-balanced full-image" ng-click="guestvisits()">客户拜访</button>
+          <button class="button button-calm full-image margin-top-1" ng-click="guestvisitsrecord()">获取客户拜访记录</button>
         </ion-content>
 
 </ion-view>

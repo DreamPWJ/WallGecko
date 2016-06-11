@@ -81,7 +81,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       })
 
       .state('tab.worklistdetails', {
-        url: '/worklistdetails/:workstate',
+        url: '/worklistdetails/:workorderid/:workstate',
         views: {
           'tab-worklist': {
             templateUrl: 'templates/worklistdetails.html',
@@ -116,7 +116,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       })
 
       .state('tab.guestlistdetails', {
-        url: '/guestlistdetails/:guestname/:gueststate',
+        url: '/guestlistdetails/:customerid/:guestname/:gueststate/:phone/:address/:description/:count',
         views: {
           'tab-account': {
             templateUrl: 'templates/guestlistdetails.html',
@@ -125,6 +125,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         }
       })
 
+      .state('tab.guestlistvisitdetails', {
+        url: '/guestlistvisitdetails',
+        views: {
+          'tab-account': {
+            templateUrl: 'templates/guestlistvisitdetails.html',
+            controller: 'GuestListVisitDetailsCtrl'
+          }
+        }
+      })
       .state('search', {
         url: '/search',
         templateUrl: 'templates/search.html',
@@ -133,6 +142,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     ;
 
     // if none of the above states are matched, use this as the fallback
-    $urlRouterProvider.otherwise('/login');
+    var role =localStorage.getItem('role');
+    if(role==null){
+      $urlRouterProvider.otherwise('/login');
+    }else  if(role=='sales'){
+      $urlRouterProvider.otherwise('/tab/main');
+    }
+    else  if(role=='operation'){
+      $urlRouterProvider.otherwise('/tab/worklist');
+    }
+
 
   });

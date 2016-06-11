@@ -7,9 +7,12 @@
      <div class="row-wrap balanced-bg  account-login text-center "  >
        <a ng-href="#/tab/login" class="col icon ion-gear-a  icon-account stable text-right "></a>
        <a ng-href="#/tab/login" class="col icon-login"><span ><i class="icon ion-ios-person stable "></i></span>
-       <a class="col stable ">登录</a> </a>
+         <a ng-show="role==null" class="col stable ">登录</a>
+         <p class="light" style="font-size: 1.2rem;">{{username}}({{role=='sales'?'销售员':'运营员'}})</p>
+         <p></p>
+       </a>
      </div>
-    <div class="list padding-top">
+    <div class="list padding-top list-borderless">
       <a ng-href="#/tab/guestlist" class="item item-icon-left item-icon-right">
         <i class="icon ion-person-stalker"></i>
 
@@ -20,7 +23,7 @@
 
 
     </div>
-    <div class="list">
+    <div class="list list-borderless">
       <a class="item item-icon-left item-icon-right">
         <i class="icon ion-information-circled"></i>
 
@@ -28,6 +31,7 @@
         <i class="icon ion-ios-arrow-right"></i>
       </a>
     </div>
+    <button class="button button-assertive full-image" ng-click="logout()">退出登录</button>
     </div>
   </ion-content>
 </ion-view>

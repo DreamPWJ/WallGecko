@@ -1,6 +1,6 @@
 <ion-view>
   <ion-nav-title>
-    <h1 class="title icon ion-ios-list"> 工单</h1>
+    <h1 class="title icon ion-ios-list"> 工单 ({{workorder_list_count}})</h1>
   </ion-nav-title>
 
     <ion-tabs class="tabs-balanced tabs-striped tabs-top ">
@@ -8,12 +8,18 @@
         <ion-view>
           <ion-content class="stable-bg" overflow-scroll="false">
             <div class="list">
-              <a  collection-repeat="item in workorder_list" ng-href="#/tab/worklistdetails/{{item.type}}" class="item item-icon-left item-icon-right no-border">
+              <div collection-repeat="item in workorder_list" >
+
+              <a   ng-href="#/tab/worklistdetails/{{item.workorder_id}}/{{item.type}}" class="item item-icon-left item-icon-right no-border" >
                 <i class="icon ion-settings icon-balanced" ></i>
                 <h2>工单号:{{item.workorder_id}}({{item.type}}工单)</h2>
-                <p>{{item.description}}</p>
+                <p>状态：{{item.status}} &nbsp; &nbsp;&nbsp;描述：{{item.description}}</p>
+                <p>楼盘数目：{{item.cells}} &nbsp; &nbsp;&nbsp;位置点数目：{{item.count}} </p>
                 <i class="icon ion-ios-arrow-right"></i>
               </a>
+                <p class="padding-top"></p>
+              </div>
+
            </div>
           </ion-content>
         </ion-view>
@@ -22,18 +28,16 @@
         <ion-view>
           <ion-content class="stable-bg" overflow-scroll="false">
             <div class="list">
-              <a ng-href="#/tab/worklistdetails/已完成" class="item item-icon-left item-icon-right no-border">
-                <i class="icon ion-checkmark-round icon-balanced" ></i>
-                <h2>工单号588558556875**</h2>
-                <p>xx市xx街xx楼</p>
-                <i class="icon ion-ios-arrow-right"></i>
-              </a>
-              <a ng-href="#/tab/worklistdetails/已完成" class="item item-icon-left item-icon-right">
-                <i class="icon ion-checkmark-round icon-balanced" ></i>
-                <h2>工单号588558556876**</h2>
-                <p>xx市xx街xx楼</p>
-                <i class="icon ion-ios-arrow-right"></i>
-              </a>
+              <div collection-repeat="item in workorder_list" >
+                <a  ng-if="item.type=='完成'"  ng-href="#/tab/worklistdetails/{{item.workorder_id}}/{{item.type}}" class="item item-icon-left item-icon-right no-border" >
+                  <i class="icon ion-settings icon-balanced" ></i>
+                  <h2>工单号:{{item.workorder_id}}({{item.type}}工单)</h2>
+                  <p>状态：{{item.status}}&nbsp; &nbsp;&nbsp;描述：{{item.description}}</p>
+                  <p>楼盘数目：{{item.cells}} &nbsp; &nbsp;&nbsp;位置点数目：{{item.count}} </p>
+                  <i class="icon ion-ios-arrow-right"></i>
+                </a>
+                <p class="padding-top"></p>
+              </div>
 
             </div>
           </ion-content>

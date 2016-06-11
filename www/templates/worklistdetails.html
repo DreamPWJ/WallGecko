@@ -14,17 +14,16 @@
   <ion-content id="worklistdetails" class="stable-bg has-subheader" overflow-scroll="false"  scroll="false">
 
     <div class="list padding-top" ng-show="cartype==null||cartype==1">
-      <a  class="item ">
+      <div ng-repeat="item in point_list"  class="item"  >
 
-        <h2>兴业楼盘   </h2>
-        <p>xx市xx街xx楼 <span class="item-note"> <i class="icon ion-camera" ng-show="workstate=='上画工单'"> 上传图片</i>   <i class="icon ion-checkmark-round "> 完成维修</i> </span> </p>
+        <h2>{{item.cell}} </h2>
+        <p>位置点位号 : {{item.point_id}}
+          <span ng-show="item.status=='空白'" class="item-note"> <button class="light icon ion-camera"  ng-click="uploadimage()" > 上传图片</button>   <i class="icon ion-checkmark-round "> 完成维修</i> </span>
+          <span ng-show="item.status=='已上画'" class="item-note "> <button class="icon ion-camera icon-balanced" > 图片已上传</button>    <i class="icon ion-checkmark-round icon-balanced"> 已完成</i> </span>
+        </p>
+        <p>状态 :{{item.status}}</p>
 
-      </a>
-      <a  class="item ">
-        <h2>安泰楼盘</h2>
-        <p>xx市xx街xx楼  <span class="item-note "> <i class="icon ion-camera icon-balanced" ng-show="workstate=='上画工单'"> 图片已上传</i>    <i class="icon ion-checkmark-round icon-balanced"> 已完成</i> </span></p>
-
-      </a>
+      </div>
     </div>
       <div id="gaode-map-1"  ng-show="cartype==2">
       </div>
