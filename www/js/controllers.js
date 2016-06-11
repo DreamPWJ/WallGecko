@@ -111,7 +111,7 @@ angular.module('starter.controllers', [])
           method: 'POST',
           url: WallCecko.api + '/mobile/user/login',
           data: {
-            username: '修1',
+            username: '销1',
             password: encodingService.md5('123')
           },
           headers: {
