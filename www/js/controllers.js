@@ -1,8 +1,13 @@
 angular.module('starter.controllers', [])
 
   .controller('MainCtrl', function ($scope, $state, $rootScope, $ionicModal, $stateParams, $http, WallCecko, mapService) {
-    $rootScope.usertype=localStorage.getItem('role');
-    //定位地图复用方法
+  
+    if (!navigator.onLine) {
+      //网络不正常工作
+      $rootScope.showAlert("壁虎漫步", "为保证功能体验正常 请链接网络!");
+    }
+      $rootScope.usertype = localStorage.getItem('role');
+      //定位地图复用方法
       $rootScope.fixLocationCommon = function (id, url) {
         var map = new AMap.Map(id, {
           resizeEnable: true,
@@ -108,7 +113,11 @@ angular.module('starter.controllers', [])
     }
   )
   .controller('WorklistCtrl', function ($scope, WallCecko, $http, $rootScope) {
-    $rootScope.usertype=localStorage.getItem('role');
+    if (!navigator.onLine) {
+      //网络不正常工作
+      $rootScope.showAlert("壁虎漫步", "为保证功能体验正常 请链接网络!");
+    }
+    $rootScope.usertype = localStorage.getItem('role');
     var promise = $http({
       method: 'GET',
       url: WallCecko.api + '/mobile/operation/workorders',
@@ -121,7 +130,7 @@ angular.module('starter.controllers', [])
       $rootScope.workorder_list_count = data.workorder_list.length;
     })
   })
-  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, mapService, $stateParams, WallCecko, $http, $ionicActionSheet, $cordovaImagePicker,$cordovaCamera) {
+  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, mapService, $stateParams, WallCecko, $http, $ionicActionSheet, $cordovaImagePicker, $cordovaCamera) {
     $scope.workorderid = $stateParams.workorderid;
     $scope.workstate = $stateParams.workstate;
     var promise = $http({
@@ -242,10 +251,10 @@ angular.module('starter.controllers', [])
 
 
       //调用摄像头拍照
-      $scope.appendByCamera=function () {
-        navigator.camera.getPicture(function(result) {
+      $scope.appendByCamera = function () {
+        navigator.camera.getPicture(function (result) {
           q.resolve(result);
-        }, function(err) {
+        }, function (err) {
           q.reject(err);
         }, options);
       }
@@ -284,7 +293,7 @@ angular.module('starter.controllers', [])
               $scope.appendByCamera();
               break;
             case 1:
-              $scope. pickImage();
+              $scope.pickImage();
               break;
             default:
               break;
@@ -338,6 +347,11 @@ angular.module('starter.controllers', [])
         console.log(res);
       });
     };
+
+    if (!navigator.onLine) {
+      //网络不正常工作
+      $rootScope.showAlert("壁虎漫步", "为保证功能体验正常 请链接网络!");
+    }
 
     $scope.user = {};//提前定义用户对象
     $scope.loginSubmit = function () {

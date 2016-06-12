@@ -5,7 +5,7 @@
 
   <ion-content overflow-scroll="false"  class="stable-bg ">
      <div class="row-wrap balanced-bg  account-login text-center "  >
-       <a ng-href="#/tab/login" class="col icon ion-gear-a  icon-account stable text-right "></a>
+       <a ng-click="logout()" class="col icon ion-gear-a  icon-account stable text-right "></a>
        <img ng-src="img/head.jpg" class="border-radius-50 head" alt="头像">
        <p class="light" style="font-size: 1.2rem;">{{username}}({{role=='sales'?'销售员':'运营员'}})</p>
      </div>
