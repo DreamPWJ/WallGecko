@@ -27,3 +27,8 @@
 .list .icon{
   color: #777;
 }
+
+.account-login .head{
+  width: 4rem;
+  height: 4rem;
+}
