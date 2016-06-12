@@ -7,26 +7,34 @@
   </ion-nav-buttons>
   <div class="bar bar-subheader">
     <div class="button-bar">
-      <a ng-click="locationlist()" class="button" ng-class="{true:'button-balanced',false:'button-stable'}[cartype==null||cartype==1]">位置列表</a>
+      <a ng-click="locationlist()" class="button"
+         ng-class="{true:'button-balanced',false:'button-stable'}[cartype==null||cartype==1]">位置列表</a>
       <a ng-click="locationmap()" class="button" ng-class="{true:'button-balanced',false:'button-stable'}[cartype==2]">位置地图</a>
     </div>
   </div>
-  <ion-content id="worklistdetails" class="stable-bg has-subheader" overflow-scroll="false"  scroll="false">
+  <ion-content id="worklistdetails" class="stable-bg has-subheader" overflow-scroll="false" scroll="false">
 
-    <div class="list padding-top" ng-show="cartype==null||cartype==1">
-      <div ng-repeat="item in point_list"  class="item"  >
-
-        <h2>{{item.cell}} </h2>
-        <p>位置点位号 : {{item.point_id}}
-          <span ng-show="item.status=='空白'" class="item-note"> <button class="light icon ion-camera"  ng-click="uploadimage()" > 上传图片</button>   <button class="icon ion-checkmark-round "  ng-click="clickshanghuatype()" > {{shanghuatype}}</button> </span>
-          <span ng-show="item.status=='已上画'" class="item-note "> <button class="icon ion-camera icon-balanced" > 图片已上传</button>    <i class="icon ion-checkmark-round icon-balanced"> 已完成</i> </span>
-        </p>
-        <p>状态 :{{item.status}}</p>
-
+    <div class="list padding-top list-borderless" ng-show="cartype==null||cartype==1">
+      <div ng-repeat="item in point_list">
+        <div class="item">
+          <h2>{{item.cell}} </h2>
+          <p>位置点位号 : {{item.point_id}}
+            <span ng-show="item.status=='空白'" class="item-note"> <button class="light icon ion-camera"
+                                                                         ng-click="uploadimage()"> 上传图片
+            </button>   <button class="icon ion-checkmark-round " ng-click="clickshanghuatype()"> {{shanghuatype}}
+            </button> </span>
+            <span ng-show="item.status=='已上画'" class="item-note "> <button class="icon ion-camera icon-balanced">
+              图片已上传
+            </button>    <i class="icon ion-checkmark-round icon-balanced"> 已完成</i> </span>
+          </p>
+          <p>状态 :{{item.status}}</p>
+        </div>
+        <p class="padding-top"></p>
       </div>
+
     </div>
-      <div id="gaode-map-1"  ng-show="cartype==2">
-      </div>
+    <div id="gaode-map-1" ng-show="cartype==2">
+    </div>
   </ion-content>
 
 </ion-view>

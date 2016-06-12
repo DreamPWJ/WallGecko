@@ -7,8 +7,42 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'starter.config','ngCordova'])
 
-  .run(function ($ionicPlatform) {
+  .run(function ($ionicPlatform,$rootScope,$ionicPopup,$location) {
     $ionicPlatform.ready(function () {
+        //主页面显示退出提示框
+        $ionicPlatform.registerBackButtonAction(function (e) {
+          e.preventDefault();
+          function showConfirm() {
+            var confirmPopup = $ionicPopup.confirm({
+              title: '<strong>退出应用?</strong>',
+              template: '你确定要退出应用吗?',
+              okText: '退出',
+              cancelText: '取消'
+            });
+
+            confirmPopup.then(function (res) {
+              if (res) {
+                ionic.Platform.exitApp();
+              } else {
+                // Don't close
+              }
+            });
+          }
+
+          // Is there a page to go back to? 制定页面返回退出程序
+          if ($location.path() == '/tab/main'|| $location.path() == '/tab/worklist' ||$location.path() == '/login') {
+            showConfirm();
+          } else if ($rootScope.$viewHistory.backView ) {
+            console.log('currentView:', $rootScope.$viewHistory.currentView);
+            // Go back in history
+            $rootScope.$viewHistory.backView.go();
+          } else {
+            // This is the last page: Show confirmation popup
+            showConfirm();
+          }
+
+          return false;
+        }, 101);
 
       //hide splash immediately 加载完成立刻隐藏启动画面
       if (navigator && navigator.splashscreen) {
@@ -56,6 +90,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       .state('tab', {
         url: '/tab',
         abstract: true,
+        cache:false,
         templateUrl: 'templates/tabs.html',
       })
 

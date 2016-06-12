@@ -1,5 +1,13 @@
+#userlogin{
+  background: url("../img/login-bg.jpg") no-repeat;
+  background-size: 100% 100%;
+  padding-top: 2rem;
+}
+#userlogin .list{
+  opacity: 0.7;
+}
 .account-login{
-  height: 10rem;
+  height: 11rem;
 }
 
  .icon-account{
@@ -29,6 +37,6 @@
 }
 
 .account-login .head{
-  width: 4rem;
-  height: 4rem;
+  width: 5rem;
+  height: 5rem;
 }

@@ -151,6 +151,7 @@ angular.module('starter.controllers', [])
     })
     promise.success(function (data) {
       $scope.point_list = data.point_list;
+      $scope.point_list.point_id = data.point_list.point_id;
     })
     $scope.shanghuatype="完成";
     $scope.clickshanghuatype=function () {
@@ -266,6 +267,32 @@ angular.module('starter.controllers', [])
 
     //上传图片方法
     $scope.uploadimage = function () {
+     // 获得七牛云上传图片令牌
+      $http({
+        method: 'POST',
+        url: WallCecko.api + '/mobile/qiniu/upload/tokens',
+        params: {
+          token: encodeURI(localStorage.getItem('token'))
+        },
+        data:{
+          point_id: $scope.point_list.point_id,
+          filename:"测试文件"
+        },
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        transformRequest: function (obj) {
+          var str = [];
+          for (var p in obj) {
+            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]))
+          }
+          return str.join("&")
+        }
+      }).success(function (data) {
+           console.log(data);
+      }).error(function () {
+        $rootScope.showAlert("壁虎漫步", "获得七牛云上传图片令牌失败!");
+      })
       $scope.images_list = [];
       var options = {
         maximumImagesCount: 1,
@@ -273,7 +300,7 @@ angular.module('starter.controllers', [])
         height: 800,
         quality: 80
       };
-      
+
       //调用摄像头拍照
       $scope.appendByCamera = function () {
         var  q= $q.defer();

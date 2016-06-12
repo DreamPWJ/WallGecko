@@ -2,7 +2,7 @@
   <ion-nav-title>
     <h1 class="title icon ion-person"> 登录</h1>
   </ion-nav-title>
-  <ion-content overflow-scroll="false">
+  <ion-content overflow-scroll="false"  id="userlogin">
 
       <div class="list card">
         <label class="item item-input">
@@ -14,11 +14,10 @@
           <input type="password" ng-model="user.password">
         </label>
 
-        <div class="item">
-          <button class="button button-block button-balanced" ng-click="loginSubmit()">登录</button>
-        </div>
       </div>
-
+    <div class="padding-horizontal">
+    <button class="button full-image button-balanced " ng-click="loginSubmit()">登录</button>
+    </div>
   </ion-content>
 </ion-view>
 

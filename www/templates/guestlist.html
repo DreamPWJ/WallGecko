@@ -2,19 +2,20 @@
   <ion-nav-title>
     <h1 class="title icon ion-person-stalker"> 客户列表</h1>
   </ion-nav-title>
-        <ion-content class="stable-bg" overflow-scroll="false">
-          <div class="list">
+  <ion-content class="stable-bg" overflow-scroll="false">
+    <div class="list list-borderless">
+      <div collection-repeat="item in customer_list">
+        <p class="padding-top"></p>
+        <a ng-href="#/tab/guestlistdetails/{{item.customer_id}}/{{item.name}}/{{item.status}}/{{item.phone}}/{{item.address}}/{{item.description}}/{{item.count}}"
+          class="item item-icon-left item-icon-right">
+          <i ng-show="item.status=='未拜访'" class="icon ion-information-circled icon-energized"></i>
+          <i ng-show="item.status=='已拜访'" class="icon ion-checkmark-round icon-balanced"></i>
+          <h2>{{item.name}}<span class="item-note">{{item.status}}</span></h2>
+          <i class="icon ion-ios-arrow-right"></i>
+        </a>
 
-            <a collection-repeat="item in customer_list" ng-href="#/tab/guestlistdetails/{{item.customer_id}}/{{item.name}}/{{item.status}}/{{item.phone}}/{{item.address}}/{{item.description}}/{{item.count}}" class="item item-icon-left item-icon-right">
-              <i ng-show="item.status=='未拜访'" class="icon ion-information-circled " ></i>
-              <i ng-show="item.status=='已拜访'" class="icon ion-checkmark-round icon-balanced" ></i>
-              <h2>{{item.name}}<span class="item-note">{{item.status}}</span></h2>
-
-              <i class="icon ion-ios-arrow-right"></i>
-
-            </a>
-
-          </div>
-        </ion-content>
+      </div>
+    </div>
+  </ion-content>
 
 </ion-view>
