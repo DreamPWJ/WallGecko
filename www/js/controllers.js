@@ -139,7 +139,7 @@ angular.module('starter.controllers', [])
     })
 
   })
-  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, mapService, $stateParams, WallCecko, $http,$ionicLoading, $ionicActionSheet, $cordovaImagePicker, $cordovaCamera) {
+  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, mapService,$q, $stateParams, WallCecko, $http,$ionicLoading, $ionicActionSheet, $cordovaImagePicker, $cordovaCamera) {
     $scope.workorderid = $stateParams.workorderid;
     $scope.workstate = $stateParams.workstate;
     var promise = $http({
@@ -267,10 +267,16 @@ angular.module('starter.controllers', [])
     //上传图片方法
     $scope.uploadimage = function () {
       $scope.images_list = [];
-
-
+      var options = {
+        maximumImagesCount: 1,
+        width: 800,
+        height: 800,
+        quality: 80
+      };
+      
       //调用摄像头拍照
       $scope.appendByCamera = function () {
+        var  q= $q.defer();
         navigator.camera.getPicture(function (result) {
           q.resolve(result);
         }, function (err) {
@@ -279,12 +285,7 @@ angular.module('starter.controllers', [])
       }
       //图片选择
       $scope.pickImage = function () {
-        var options = {
-          maximumImagesCount: 1,
-          width: 800,
-          height: 800,
-          quality: 80
-        };
+
 
         $cordovaImagePicker.getPictures(options)
           .then(function (results) {
