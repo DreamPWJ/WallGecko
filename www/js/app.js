@@ -140,7 +140,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       .state('search', {
         url: '/search',
         templateUrl: 'templates/search.html',
-        controller: 'SearchCtrl'
+        controller: 'MainCtrl'
       })
     ;
 
@@ -150,8 +150,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       $urlRouterProvider.otherwise('/login');
     }else  if(role=='sales'){
       $urlRouterProvider.otherwise('/tab/main');
-    }
-    else  if(role=='operation'){
+    } else  if(role=='operation'){
       $urlRouterProvider.otherwise('/tab/worklist');
     }
 

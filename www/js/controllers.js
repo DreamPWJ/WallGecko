@@ -1,14 +1,17 @@
 angular.module('starter.controllers', [])
 
-  .controller('MainCtrl', function ($scope, $state, $rootScope, $ionicModal, $stateParams, $http, WallCecko, mapService) {
-  
-    if (!navigator.onLine) {
-      //网络不正常工作
-      $rootScope.showAlert("壁虎漫步", "为保证功能体验正常 请链接网络!");
-    }
+  .controller('MainCtrl', function ($scope, $state, $rootScope, $ionicModal, $stateParams, $http, WallCecko, $ionicLoading) {
+
       $rootScope.usertype = localStorage.getItem('role');
+      //加载动画
+      $ionicLoading.show({
+        template: '<ion-spinner icon="bubbles" class="spinner-balanced"></ion-spinner>',
+        animation: 'fade-in',
+        showBackdrop: false
+      });
+
       //定位地图复用方法
-      $rootScope.fixLocationCommon = function (id, url) {
+      $rootScope.fixLocationCommon = function (id, url,query) {
         var map = new AMap.Map(id, {
           resizeEnable: true,
           zoom: 12
@@ -37,7 +40,7 @@ angular.module('starter.controllers', [])
           var params = {};
           if (url == '/mobile/map/cells') {
             params = {
-              q: '',
+              q: query,
               city: '',
               token: encodeURI(localStorage.getItem('token')),
               longitude: $rootScope.lag,
@@ -58,7 +61,9 @@ angular.module('starter.controllers', [])
           promise.success(function (data) {
             $rootScope.city = data.city;
             $scope.cell_list = data.cell_list;
-
+            if(data.cell_list.length==0){
+              $rootScope.showAlert("壁虎漫步", "没有获取到相关的信息!");
+            }
           })
 
           promise.then(function () {
@@ -74,6 +79,7 @@ angular.module('starter.controllers', [])
 
             var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
 
+            $ionicLoading.hide();//隐藏加载动画
             for (var i = 0, marker; i < markers.length; i++) {
               var marker = new AMap.Marker({
                 position: markers[i].lnglats,
@@ -90,6 +96,7 @@ angular.module('starter.controllers', [])
             }
 
             map.setFitView();
+
           })
 
         }
@@ -109,14 +116,15 @@ angular.module('starter.controllers', [])
       }).then(function (modal) {
         $scope.modal = modal;
       });
-
+    //查询参数
+     $scope.search={};
+     $scope.searchmap=function () {
+      $rootScope.fixLocationCommon ("gaode-map", "/mobile/map/cells",$scope.search.searchquery);
+       $scope.modal.hide();
+    }
     }
   )
   .controller('WorklistCtrl', function ($scope, WallCecko, $http, $rootScope) {
-    if (!navigator.onLine) {
-      //网络不正常工作
-      $rootScope.showAlert("壁虎漫步", "为保证功能体验正常 请链接网络!");
-    }
     $rootScope.usertype = localStorage.getItem('role');
     var promise = $http({
       method: 'GET',
@@ -129,8 +137,9 @@ angular.module('starter.controllers', [])
       $scope.workorder_list = data.workorder_list;
       $rootScope.workorder_list_count = data.workorder_list.length;
     })
+
   })
-  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, mapService, $stateParams, WallCecko, $http, $ionicActionSheet, $cordovaImagePicker, $cordovaCamera) {
+  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, mapService, $stateParams, WallCecko, $http,$ionicLoading, $ionicActionSheet, $cordovaImagePicker, $cordovaCamera) {
     $scope.workorderid = $stateParams.workorderid;
     $scope.workstate = $stateParams.workstate;
     var promise = $http({
@@ -143,12 +152,21 @@ angular.module('starter.controllers', [])
     promise.success(function (data) {
       $scope.point_list = data.point_list;
     })
-
+    $scope.shanghuatype="完成";
+    $scope.clickshanghuatype=function () {
+      $scope.shanghuatype="已维修";
+    }
     $scope.locationlist = function () {
       $scope.cartype = 1;
     }
     $scope.locationmap = function () {
       $scope.cartype = 2;
+      //加载动画
+      $ionicLoading.show({
+        template: '<ion-spinner icon="bubbles" class="spinner-balanced"></ion-spinner>',
+        animation: 'fade-in',
+        showBackdrop: false
+      });
       //定位地图复用方法
       $rootScope.fixLocationCommon = function (id, url) {
         var map = new AMap.Map(id, {
@@ -216,6 +234,7 @@ angular.module('starter.controllers', [])
 
             var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
 
+            $ionicLoading.hide();//隐藏加载动画
             for (var i = 0, marker; i < markers.length; i++) {
               var marker = new AMap.Marker({
                 position: markers[i].lnglats,
@@ -348,10 +367,6 @@ angular.module('starter.controllers', [])
       });
     };
 
-    if (!navigator.onLine) {
-      //网络不正常工作
-      $rootScope.showAlert("壁虎漫步", "为保证功能体验正常 请链接网络!");
-    }
 
     $scope.user = {};//提前定义用户对象
     $scope.loginSubmit = function () {
@@ -471,8 +486,5 @@ angular.module('starter.controllers', [])
 
   })
 
-  .controller('SearchCtrl', function ($scope) {
-
-  })
 
 

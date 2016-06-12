@@ -10,20 +10,16 @@
        <p class="light" style="font-size: 1.2rem;">{{username}}({{role=='sales'?'销售员':'运营员'}})</p>
      </div>
     <div class="list padding-top list-borderless">
-      <a ng-href="#/tab/guestlist" class="item item-icon-left item-icon-right">
+      <a ng-hide="role=='operation'" ng-href="#/tab/guestlist" class="item item-icon-left item-icon-right">
         <i class="icon ion-person-stalker"></i>
-
         <h2>客户列表</h2>
         <i class="icon ion-ios-arrow-right"></i>
       </a>
-
-
 
     </div>
     <div class="list list-borderless">
       <a class="item item-icon-left item-icon-right">
         <i class="icon ion-information-circled"></i>
-
         <h2>软件版本信息</h2>
         <i class="icon ion-ios-arrow-right"></i>
       </a>
