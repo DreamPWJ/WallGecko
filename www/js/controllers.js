@@ -1,8 +1,25 @@
 angular.module('starter.controllers', [])
+  .config(function ($httpProvider) {
+    //$http模块POST请求类型编码转换 统一配置
+    $httpProvider.defaults.transformRequest = function (obj) {
+      var str = [];
+      for (var p in obj) {
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]))
+      }
+      return str.join("&")
+    }
+    $httpProvider.defaults.headers.post = {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
 
-  .controller('MainCtrl', function ($scope, $state, $rootScope, $ionicModal, $stateParams, $http, WallCecko, $ionicLoading) {
+    $httpProvider.defaults.headers.put = {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+  .controller('TabCtrl', function ($scope, $state, $rootScope, $ionicModal, $http, WallCecko, $ionicLoading, commonService) {
 
-      $rootScope.usertype = localStorage.getItem('role');
+    //定位地图复用方法
+    $rootScope.fixLocationCommon = function (id, url, query) {
       //加载动画
       $ionicLoading.show({
         template: '<ion-spinner icon="bubbles" class="spinner-balanced"></ion-spinner>',
@@ -10,102 +27,105 @@ angular.module('starter.controllers', [])
         showBackdrop: false
       });
 
-      //定位地图复用方法
-      $rootScope.fixLocationCommon = function (id, url,query) {
-        var map = new AMap.Map(id, {
-          resizeEnable: true,
-          zoom: 12
+      var map = new AMap.Map(id, {
+        resizeEnable: true,
+        zoom: 12
+      });
+
+      map.plugin('AMap.Geolocation', function () {
+        geolocation = new AMap.Geolocation({
+          enableHighAccuracy: true,//是否使用高精度定位，默认:true
+          timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+          buttonOffset: new AMap.Pixel(15, 30),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+          zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+          buttonPosition: 'RB'
         });
 
-        map.plugin('AMap.Geolocation', function () {
-          geolocation = new AMap.Geolocation({
-            enableHighAccuracy: true,//是否使用高精度定位，默认:true
-            timeout: 10000,          //超过10秒后停止定位，默认：无穷大
-            buttonOffset: new AMap.Pixel(15, 30),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-            zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-            buttonPosition: 'RB'
-          });
+        map.addControl(geolocation);
+        geolocation.getCurrentPosition();
+        AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
+        AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
+      });
+      //解析定位结果
+      function onComplete(data) {
+        $rootScope.lag = data.position.getLng();
+        $rootScope.lat = data.position.getLat();
+        map.setZoom(16);
+        map.clearMap();  // 清除地图覆盖物
+        var params = {};
+        if (url == '/mobile/map/cells') {
+          params = {
+            q: query,
+            city: '',
+            token: encodeURI(localStorage.getItem('token')),
+            longitude: $rootScope.lag,
+            latitude: $rootScope.lat
+          }
+        } else {
+          params = {
+            city: $rootScope.city,
+            token: encodeURI(localStorage.getItem('token'))
+          }
+        }
 
-          map.addControl(geolocation);
-          geolocation.getCurrentPosition();
-          AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
-          AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
-        });
-        //解析定位结果
-        function onComplete(data) {
-          $rootScope.lag = data.position.getLng();
-          $rootScope.lat = data.position.getLat();
-          map.setZoom(16);
-          map.clearMap();  // 清除地图覆盖物
-          var params = {};
-          if (url == '/mobile/map/cells') {
-            params = {
-              q: query,
-              city: '',
-              token: encodeURI(localStorage.getItem('token')),
-              longitude: $rootScope.lag,
-              latitude: $rootScope.lat
-            }
-          } else {
-            params = {
-              city: $rootScope.city,
-              token: encodeURI(localStorage.getItem('token'))
-            }
+        var promise = $http({
+          method: 'GET',
+          url: WallCecko.api + url,
+          params: params
+        })
+        promise.success(function (data) {
+          $rootScope.city = data.city;
+          $scope.cell_list = data.cell_list;
+          if (data.cell_list.length == 0) {
+            commonService.showAlert("壁虎漫步", "没有获取到相关的信息!");
+          }
+        })
+
+        promise.then(function () {
+          var markers = []
+          for (var i = 0, len = $scope.cell_list.length; i < len; i++) {
+            markers.push({
+              lnglats: [$scope.cell_list[i].longitude, $scope.cell_list[i].latitude],
+              name: $scope.cell_list[i].name,
+              address: $scope.cell_list[i].address,
+              count: $scope.cell_list[i].count
+            })
           }
 
-          var promise = $http({
-            method: 'GET',
-            url: WallCecko.api + url,
-            params: params
-          })
-          promise.success(function (data) {
-            $rootScope.city = data.city;
-            $scope.cell_list = data.cell_list;
-            if(data.cell_list.length==0){
-              $rootScope.showAlert("壁虎漫步", "没有获取到相关的信息!");
-            }
-          })
+          var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
 
-          promise.then(function () {
-            var markers = []
-            for (var i = 0, len = $scope.cell_list.length; i < len; i++) {
-              markers.push({
-                lnglats: [$scope.cell_list[i].longitude, $scope.cell_list[i].latitude],
-                name: $scope.cell_list[i].name,
-                address: $scope.cell_list[i].address,
-                count: $scope.cell_list[i].count
-              })
-            }
+          $ionicLoading.hide();//隐藏加载动画
+          for (var i = 0; i < markers.length; i++) {
+            var marker = new AMap.Marker({
+              position: markers[i].lnglats,
+              map: map
+            });
+            marker.content = '<strong>楼盘名 : ' + markers[i].name + ' </strong><br><span>地址 : ' + markers[i].address + '</span>' +
+              '<br><span>位置点数 : ' + markers[i].count + '</span>';
+            marker.on('click', markerClick);
+            marker.emit('click', {target: marker});
+          }
+          function markerClick(e) {
+            infoWindow.setContent(e.target.content);
+            infoWindow.open(map, e.target.getPosition());
+          }
 
-            var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
+          map.setFitView();
 
-            $ionicLoading.hide();//隐藏加载动画
-            for (var i = 0, marker; i < markers.length; i++) {
-              var marker = new AMap.Marker({
-                position: markers[i].lnglats,
-                map: map
-              });
-              marker.content = '<strong>楼盘名 : ' + markers[i].name + ' </strong><br><span>地址 : ' + markers[i].address + '</span>' +
-                '<br><span>位置点数 : ' + markers[i].count + '</span>';
-              marker.on('click', markerClick);
-              marker.emit('click', {target: marker});
-            }
-            function markerClick(e) {
-              infoWindow.setContent(e.target.content);
-              infoWindow.open(map, e.target.getPosition());
-            }
+        })
 
-            map.setFitView();
-
-          })
-
-        }
-
-        //解析定位错误信息
-        function onError(data) {
-          $rootScope.showAlert("壁虎漫步", "壁虎漫步地理位置获取失败!");
-        }
       }
+
+      //解析定位错误信息
+      function onError(data) {
+        commonService.showAlert("壁虎漫步", "壁虎漫步地理位置获取失败!");
+      }
+    }
+  })
+  .controller('MainCtrl', function ($scope, $state, $rootScope, $ionicModal, $stateParams, $http, WallCecko, $ionicLoading) {
+
+      $rootScope.usertype = localStorage.getItem('role');
+
       //调用地图定位
       $rootScope.fixLocationCommon("gaode-map", "/mobile/map/cells");
 
@@ -116,15 +136,15 @@ angular.module('starter.controllers', [])
       }).then(function (modal) {
         $scope.modal = modal;
       });
-    //查询参数
-     $scope.search={};
-     $scope.searchmap=function () {
-      $rootScope.fixLocationCommon ("gaode-map", "/mobile/map/cells",$scope.search.searchquery);
-       $scope.modal.hide();
-    }
+      //查询参数
+      $scope.search = {};
+      $scope.searchmap = function () {
+        $rootScope.fixLocationCommon("gaode-map", "/mobile/map/cells", $scope.search.searchquery);
+        $scope.modal.hide();
+      }
     }
   )
-  .controller('WorklistCtrl', function ($scope, WallCecko, $http, $rootScope) {
+  .controller('WorklistCtrl', function ($scope, WallCecko, $http, $rootScope,commonService) {
     $rootScope.usertype = localStorage.getItem('role');
     var promise = $http({
       method: 'GET',
@@ -138,8 +158,26 @@ angular.module('starter.controllers', [])
       $rootScope.workorder_list_count = data.workorder_list.length;
     })
 
+    //更改工单状态
+    $scope.updateworkordersstatus=function (workorderid,orderstatus) {
+
+      var promise = $http({
+        method: 'PUT',
+        url: WallCecko.api + '/mobile/operation/workorders/'+workorderid,
+        params: {
+          token: encodeURI(localStorage.getItem('token')),
+          status:encodeURIorderstatus
+        }
+      })
+      promise.success(function () {
+        commonService.showAlert("壁虎漫步", "工单状态更新成功!");
+      }).error(function () {
+        commonService.showAlert("壁虎漫步", "工单状态更新失败!");
+      })
+
+    }
   })
-  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, mapService,$q, $stateParams, WallCecko, $http,$ionicLoading, $ionicActionSheet, $cordovaImagePicker, $cordovaCamera) {
+  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, $q, $stateParams, WallCecko, $http, $ionicLoading, $ionicActionSheet, $cordovaImagePicker, commonService) {
     $scope.workorderid = $stateParams.workorderid;
     $scope.workstate = $stateParams.workstate;
     var promise = $http({
@@ -153,147 +191,23 @@ angular.module('starter.controllers', [])
       $scope.point_list = data.point_list;
       $scope.point_list.point_id = data.point_list.point_id;
     })
-    $scope.shanghuatype="完成";
-    $scope.clickshanghuatype=function () {
-      $scope.shanghuatype="已维修";
+    $scope.shanghuatype = "完成";
+    $scope.clickshanghuatype = function () {
+      $scope.shanghuatype = "已维修";
     }
     $scope.locationlist = function () {
       $scope.cartype = 1;
     }
     $scope.locationmap = function () {
       $scope.cartype = 2;
-      //加载动画
-      $ionicLoading.show({
-        template: '<ion-spinner icon="bubbles" class="spinner-balanced"></ion-spinner>',
-        animation: 'fade-in',
-        showBackdrop: false
-      });
-      //定位地图复用方法
-      $rootScope.fixLocationCommon = function (id, url) {
-        var map = new AMap.Map(id, {
-          resizeEnable: true,
-          zoom: 12
-        });
 
-        map.plugin('AMap.Geolocation', function () {
-          geolocation = new AMap.Geolocation({
-            enableHighAccuracy: true,//是否使用高精度定位，默认:true
-            timeout: 10000,          //超过10秒后停止定位，默认：无穷大
-            buttonOffset: new AMap.Pixel(15, 30),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-            zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-            buttonPosition: 'RB'
-          });
-
-          map.addControl(geolocation);
-          geolocation.getCurrentPosition();
-          AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
-          AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
-        });
-        //解析定位结果
-        function onComplete(data) {
-          $rootScope.lag = data.position.getLng();
-          $rootScope.lat = data.position.getLat();
-          map.setZoom(16);
-          map.clearMap();  // 清除地图覆盖物
-          var params = {};
-          if (url == '/mobile/map/cells') {
-            params = {
-              q: '',
-              city: '',
-              token: encodeURI(localStorage.getItem('token')),
-              longitude: $rootScope.lag,
-              latitude: $rootScope.lat
-            }
-          } else {
-            params = {
-              city: $rootScope.city,
-              token: encodeURI(localStorage.getItem('token'))
-            }
-          }
-
-          var promise = $http({
-            method: 'GET',
-            url: WallCecko.api + url,
-            params: params
-          })
-          promise.success(function (data) {
-            $rootScope.city = data.city;
-            $scope.cell_list = data.cell_list;
-
-          })
-
-          promise.then(function () {
-            var markers = []
-            for (var i = 0, len = $scope.cell_list.length; i < len; i++) {
-              markers.push({
-                lnglats: [$scope.cell_list[i].longitude, $scope.cell_list[i].latitude],
-                name: $scope.cell_list[i].name,
-                address: $scope.cell_list[i].address,
-                count: $scope.cell_list[i].count
-              })
-            }
-
-            var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
-
-            $ionicLoading.hide();//隐藏加载动画
-            for (var i = 0, marker; i < markers.length; i++) {
-              var marker = new AMap.Marker({
-                position: markers[i].lnglats,
-                map: map
-              });
-              marker.content = '<strong>楼盘名 : ' + markers[i].name + ' </strong><br><span>地址 : ' + markers[i].address + '</span>' +
-                '<br><span>位置点数 : ' + markers[i].count + '</span>';
-              marker.on('click', markerClick);
-              marker.emit('click', {target: marker});
-            }
-            function markerClick(e) {
-              infoWindow.setContent(e.target.content);
-              infoWindow.open(map, e.target.getPosition());
-            }
-
-            map.setFitView();
-          })
-
-        }
-
-        //解析定位错误信息
-        function onError(data) {
-          $rootScope.showAlert("壁虎漫步", "壁虎漫步地理位置获取失败!");
-        }
-      }
       //调用地图定位
       $rootScope.fixLocationCommon("gaode-map-1", "/mobile/map/workorders/" + $scope.workorderid);
     }
 
     //上传图片方法
     $scope.uploadimage = function () {
-     // 获得七牛云上传图片令牌
-      $http({
-        method: 'POST',
-        url: WallCecko.api + '/mobile/qiniu/upload/tokens',
-        params: {
-          token: encodeURI(localStorage.getItem('token'))
-        },
-        data:{
-          point_id: $scope.point_list.point_id,
-          filename:"测试文件"
-        },
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        transformRequest: function (obj) {
-          var str = [];
-          for (var p in obj) {
-            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]))
-          }
-          return str.join("&")
-        }
-      }).success(function (data) {
-           console.log(data);
-      }).error(function () {
-        $rootScope.showAlert("壁虎漫步", "获得七牛云上传图片令牌失败!");
-      })
-      $scope.images_list = [];
+
       var options = {
         maximumImagesCount: 1,
         width: 800,
@@ -301,9 +215,61 @@ angular.module('starter.controllers', [])
         quality: 80
       };
 
+
+      // 获得七牛云上传图片令牌
+      $scope.qiniuupload = function (filename) {
+        var promise = $http({
+          method: 'POST',
+          url: WallCecko.api + '/mobile/qiniu/upload/tokens',
+          params: {
+            token: encodeURI(localStorage.getItem('token'))
+          },
+          data: {
+            point_id: $scope.point_list.point_id,
+            filename: filename
+          }
+        })
+        promise.success(function (data) {
+          commonService.showAlert("壁虎漫步data.token", data.token);
+          commonService.showAlert("壁虎漫步data.key", data.key);
+
+        }).error(function () {
+          commonService.showAlert("壁虎漫步", "获得七牛云上传图片令牌失败!");
+        })
+        return promise;
+      }
+      // 图片上传七牛云成功通知
+      $scope.qiniuuploadinfo = function (filename) {
+        $http({
+          method: 'POST',
+          url: WallCecko.api + '/mobile/qiniu/upload/images',
+          params: {
+            token: encodeURI(localStorage.getItem('token'))
+          },
+          data: {
+            point_id: $scope.point_list.point_id,
+            filename: filename
+          }
+        }).success(function () {
+          commonService.showAlert("壁虎漫步", "七牛云上传图片成功!");
+        }).error(function () {
+
+        })
+      }
+      //文件上传
+      $scope.fileupload =function (fileURL,serverURL) {
+        var ft = new FileTransfer();
+        ft.upload(fileURL, '服务器地址', function(data) {
+          // 响应数据
+          var resp = JSON.parse(data.response);
+        }, function() {
+          commonService.showAlert("壁虎漫步", "上传图片失败!");
+        }, options);
+      }
+
       //调用摄像头拍照
       $scope.appendByCamera = function () {
-        var  q= $q.defer();
+        var q = $q.defer();
         navigator.camera.getPicture(function (result) {
           q.resolve(result);
         }, function (err) {
@@ -312,15 +278,22 @@ angular.module('starter.controllers', [])
       }
       //图片选择
       $scope.pickImage = function () {
-
-
         $cordovaImagePicker.getPictures(options)
           .then(function (results) {
-            $scope.images_list.push(results[0]);
+            var uri = results[0]
+            var filename = uri;
+            if (filename.indexOf('/')) {
+              var i = filename.lastIndexOf('/');
+              filename = filename.substring(i + 1);
+            }
+            var promise = $scope.qiniuupload(filename);
+            promise.then(function () {
+              $scope.qiniuuploadinfo(filename)
+            })
 
-          }, function (error) {
-            // error getting photos
-          });
+          }, function () {
+            commonService.showAlert("壁虎漫步", "图片选择失败!");
+          })
       }
 
 
@@ -350,7 +323,7 @@ angular.module('starter.controllers', [])
       });
     }
   })
-  .controller('AccountCtrl', function ($scope, $rootScope, WallCecko, $http, $state) {
+  .controller('AccountCtrl', function ($scope, $rootScope, WallCecko, $http, $state, commonService) {
     $scope.username = localStorage.getItem('username');
     $scope.role = localStorage.getItem('role');
     $scope.logout = function () {
@@ -359,16 +332,6 @@ angular.module('starter.controllers', [])
         url: WallCecko.api + '/mobile/user/logout',
         params: {
           token: encodeURI(localStorage.getItem('token'))
-        },
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        transformRequest: function (obj) {
-          var str = [];
-          for (var p in obj) {
-            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]))
-          }
-          return str.join("&")
         }
       }).success(function () {
         localStorage.removeItem('token');
@@ -377,24 +340,11 @@ angular.module('starter.controllers', [])
         //用户类型退出 路由到登录页面
         $state.go("login")
       }).error(function () {
-        $rootScope.showAlert("壁虎漫步", "退出失败!");
+        commonService.showAlert("壁虎漫步", "退出失败!");
       })
     }
   })
-  .controller('LoginCtrl', function ($scope, $rootScope, $ionicPopup, WallCecko, $http, encodingService, $state) {
-    // 一个提示对话框
-    $rootScope.showAlert = function (title, template) {
-      var alertPopup = $ionicPopup.alert({
-        title: title,
-        template: template,
-        okText: '确定',
-        okType: 'button-balanced'
-      });
-      alertPopup.then(function (res) {
-        console.log(res);
-      });
-    };
-
+  .controller('LoginCtrl', function ($scope, $rootScope, WallCecko, $http, encodingService, $state, commonService) {
 
     $scope.user = {};//提前定义用户对象
     $scope.loginSubmit = function () {
@@ -404,16 +354,6 @@ angular.module('starter.controllers', [])
           data: {
             username: $scope.user.username,
             password: encodingService.md5($scope.user.password)
-          },
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          transformRequest: function (obj) {
-            var str = [];
-            for (var p in obj) {
-              str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]))
-            }
-            return str.join("&")
           }
         }
       )
@@ -421,7 +361,7 @@ angular.module('starter.controllers', [])
         localStorage.setItem('token', data.token);
       })
       promise.error(function () {
-        $rootScope.showAlert("壁虎漫步", "登录失败!");
+        commonService.showAlert("壁虎漫步", "登录失败!");
       })
       promise.then(function () {
         $http({
@@ -456,7 +396,7 @@ angular.module('starter.controllers', [])
       $scope.customer_list = data.customer_list;
     })
   })
-  .controller('GuestListDetailsCtrl', function ($scope, $stateParams, WallCecko, $http, $rootScope) {
+  .controller('GuestListDetailsCtrl', function ($scope, $stateParams, WallCecko, $http, $rootScope, commonService) {
     $scope.customerid = $stateParams.customerid;
     $scope.guestname = $stateParams.guestname;
     $scope.gueststate = $stateParams.gueststate;
@@ -468,7 +408,7 @@ angular.module('starter.controllers', [])
     $scope.guestvisits = function () {
       var promise = $http({
           method: 'POST',
-          url: WallCecko.api + '/mobile/sales/customers/' + $scope.customerid + '>/visits',
+          url: WallCecko.api + '/mobile/sales/customers/' + $scope.customerid + '/visits',
           params: {
             token: encodeURI(localStorage.getItem('token'))
           },
@@ -476,24 +416,13 @@ angular.module('starter.controllers', [])
             address: $scope.address,
             longitude: $rootScope.lag,
             latitude: $rootScope.lat
-          },
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          transformRequest: function (obj) {
-            var str = [];
-            for (var p in obj) {
-              str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]))
-            }
-            return str.join("&")
           }
         }
       )
       promise.success(function (data) {
-        console.log(data);
-        $rootScope.showAlert("壁虎漫步", "客户拜访成功!");
+        commonService.showAlert("壁虎漫步", "客户拜访成功!");
       }).error(function () {
-        $rootScope.showAlert("壁虎漫步", "客户拜访失败!");
+        commonService.showAlert("壁虎漫步", "客户拜访失败!");
       })
     }
 

@@ -10,21 +10,23 @@
     <ion-tab title="待处理">
       <ion-view>
         <ion-content class="stable-bg" overflow-scroll="false">
-          <div class="list">
+          <ion-list>
             <div collection-repeat="item in workorder_list">
               <p class="padding-top"></p>
-              <a ng-href="#/tab/worklistdetails/{{item.workorder_id}}/{{item.type}}"
+              <ion-item ng-href="#/tab/worklistdetails/{{item.workorder_id}}/{{item.type}}"
                  class="item item-icon-left item-icon-right no-border">
                 <i class="icon ion-settings icon-balanced"></i>
                 <h2>工单号:{{item.workorder_id}}({{item.type}}工单)</h2>
                 <p>状态：{{item.status}} &nbsp; &nbsp;&nbsp;描述：{{item.description}}</p>
                 <p>楼盘数目：{{item.cells}} &nbsp; &nbsp;&nbsp;位置点数目：{{item.count}} </p>
                 <i class="icon ion-ios-arrow-right"></i>
-              </a>
+                <ion-option-button class="button-balanced" ng-click="updateworkordersstatus(item.workorder_id,'完成')" >完成</ion-option-button>
+                <ion-option-button class="button-energized" ng-click="updateworkordersstatus(item.workorder_id,'取消')" >取消</ion-option-button>
+              </ion-item>
 
             </div>
 
-          </div>
+          </ion-list>
         </ion-content>
       </ion-view>
     </ion-tab>

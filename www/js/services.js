@@ -1,4 +1,20 @@
 angular.module('starter.services', [])
+  .service('commonService', function ($ionicPopup) {
+     return{
+       showAlert :function (title, template)  {
+         // 一个提示对话框
+           var alertPopup = $ionicPopup.alert({
+             title: title,
+             template: template,
+             okText: '确定',
+             okType: 'button-balanced'
+           });
+           alertPopup.then(function (res) {
+             console.log(res);
+           });
+       }
+     }
+  })
   .service('encodingService', function () {
     return {
       md5: function (str) {
@@ -302,100 +318,4 @@ angular.module('starter.services', [])
       }
     }
   })
-  .service('mapService', function () {
-    return {
-      //定位地图复用方法
-      fixLocationCommon: function (id, url) {
-        var map = new AMap.Map(id, {
-          resizeEnable: true,
-          zoom: 12
-        });
 
-        map.plugin('AMap.Geolocation', function () {
-          geolocation = new AMap.Geolocation({
-            enableHighAccuracy: true,//是否使用高精度定位，默认:true
-            timeout: 10000,          //超过10秒后停止定位，默认：无穷大
-            buttonOffset: new AMap.Pixel(15, 30),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-            zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-            buttonPosition: 'RB'
-          });
-
-          map.addControl(geolocation);
-          geolocation.getCurrentPosition();
-          AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
-          AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
-        });
-        //解析定位结果
-        function onComplete(data) {
-          $rootScope.lag = data.position.getLng();
-          $rootScope.lat = data.position.getLat();
-          map.setZoom(16);
-          map.clearMap();  // 清除地图覆盖物
-          var params = {};
-          if (url == '/mobile/map/cells') {
-            params = {
-              q: '',
-              city: '',
-              token: encodeURI(localStorage.getItem('token')),
-              longitude: $rootScope.lag,
-              latitude: $rootScope.lat
-            }
-          } else {
-            params = {
-              city: $rootScope.city,
-              token: encodeURI(localStorage.getItem('token'))
-            }
-          }
-
-
-          var promise = $http({
-            method: 'GET',
-            url: WallCecko.api + url,
-            params: params
-          })
-          promise.success(function (data) {
-            $rootScope.city = data.city;
-            $scope.cell_list = data.cell_list;
-
-          })
-
-          promise.then(function () {
-            var markers = []
-            for (var i = 0, len = $scope.cell_list.length; i < len; i++) {
-              markers.push({
-                lnglats: [$scope.cell_list[i].longitude, $scope.cell_list[i].latitude],
-                name: $scope.cell_list[i].name,
-                address: $scope.cell_list[i].address,
-                count: $scope.cell_list[i].count
-              })
-            }
-
-            var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
-
-            for (var i = 0, marker; i < markers.length; i++) {
-              var marker = new AMap.Marker({
-                position: markers[i].lnglats,
-                map: map
-              });
-              marker.content = '<strong>楼盘名 : ' + markers[i].name + ' </strong><br><span>地址 : ' + markers[i].address + '</span>' +
-                '<br><span>位置点数 : ' + markers[i].count + '</span>';
-              marker.on('click', markerClick);
-              marker.emit('click', {target: marker});
-            }
-            function markerClick(e) {
-              infoWindow.setContent(e.target.content);
-              infoWindow.open(map, e.target.getPosition());
-            }
-
-            map.setFitView();
-          })
-
-        }
-
-        //解析定位错误信息
-        function onError(data) {
-          $rootScope.showAlert("壁虎漫步", "壁虎漫步地理位置获取失败!");
-        }
-      }
-    }
-  })
