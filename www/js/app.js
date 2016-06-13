@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'starter.config','ngCordova'])
 
-  .run(function ($ionicPlatform,$rootScope,$ionicPopup,$location) {
+  .run(function ($ionicPlatform,$rootScope,$ionicPopup,$location,$ionicHistory) {
     $ionicPlatform.ready(function () {
         //主页面显示退出提示框
         $ionicPlatform.registerBackButtonAction(function (e) {
@@ -15,7 +15,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
           function showConfirm() {
             var confirmPopup = $ionicPopup.confirm({
               title: '<strong>退出应用?</strong>',
-              template: '你确定要退出应用吗?',
+              template: '你确定要退出壁虎漫步应用吗?',
               okText: '退出',
               cancelText: '取消'
             });
@@ -30,12 +30,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
           }
 
           // Is there a page to go back to? 制定页面返回退出程序
-          if ($location.path() == '/tab/main'|| $location.path() == '/tab/worklist' ||$location.path() == '/login') {
+          if ($location.path() == '/tab/main'|| $location.path() == '/tab/worklist' ||$location.path() == '/login' || $location.path() == '/tab/account') {
             showConfirm();
-          } else if ($rootScope.$viewHistory.backView ) {
-            console.log('currentView:', $rootScope.$viewHistory.currentView);
+          } else if ($ionicHistory.backView()) {
             // Go back in history
-            $rootScope.$viewHistory.backView.go();
+            $ionicHistory.goBack();
           } else {
             // This is the last page: Show confirmation popup
             showConfirm();
