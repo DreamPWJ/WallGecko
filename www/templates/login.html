@@ -2,22 +2,23 @@
   <ion-nav-title>
     <h1 class="title icon ion-person"> 登录</h1>
   </ion-nav-title>
-  <ion-content overflow-scroll="false"  id="userlogin">
-
+  <ion-content overflow-scroll="false" id="userlogin">
+    <form name="loginForm">
       <div class="list card">
         <label class="item item-input">
           <span class="input-label icon ion-person"> 账号</span>
-          <input type="text" ng-model="user.username">
+          <input type="text" ng-model="user.username" required>
         </label>
         <label class="item item-input">
-          <span class="input-label icon ion-unlocked" > 密码</span>
-          <input type="password" ng-model="user.password">
+          <span class="input-label icon ion-unlocked"> 密码</span>
+          <input type="password" ng-model="user.password" required="">
         </label>
 
       </div>
-    <div class="padding-horizontal">
-    <button class="button full-image button-balanced " ng-click="loginSubmit()">登录</button>
-    </div>
+      <div class="padding-horizontal">
+        <button class="button full-image button-balanced " ng-click="loginSubmit()" ng-disabled="!loginForm.$valid">登录</button>
+      </div>
+    </form>
   </ion-content>
 </ion-view>
 
