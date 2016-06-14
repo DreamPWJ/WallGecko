@@ -3,7 +3,7 @@
     <h1 class="title icon ion-ios-list"> 详情({{workstate}})</h1>
   </ion-nav-title>
   <ion-nav-buttons side="right">
-    <a ng-href="#/tab/worklist" class="button button-clear "> 关闭工单</a>
+    <button ng-click="updateworkordersstatus()"  class="button button-clear "> 关闭工单</button>
   </ion-nav-buttons>
   <div class="bar bar-subheader">
     <div class="button-bar">
@@ -19,9 +19,9 @@
         <div class="item">
           <h2>{{item.cell}} </h2>
           <p>位置点位号 : {{item.point_id}}
-            <span ng-show="item.status=='空白'" class="item-note"> <button class="light icon ion-camera"
+            <span  class="item-note"> <button ng-show="item.status=='空白'" class="light icon ion-camera"
                                                                          ng-click="uploadimage()"> 上传图片
-            </button>   <button class="icon ion-checkmark-round " ng-click="clickshanghuatype()"> {{shanghuatype}}
+            </button>   <button class="icon ion-checkmark-round " ng-click="updatepointsstatus(item.point_id,'已维修')"> 完成
             </button> </span>
             <span ng-show="item.status=='已上画'" class="item-note "> <button class="icon ion-camera icon-balanced">
               图片已上传

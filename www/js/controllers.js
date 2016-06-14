@@ -158,24 +158,7 @@ angular.module('starter.controllers', [])
       $rootScope.workorder_list_count = data.workorder_list.length;
     })
 
-    //更改工单状态
-    $scope.updateworkordersstatus=function (workorderid,orderstatus) {
 
-      var promise = $http({
-        method: 'PUT',
-        url: WallCecko.api + '/mobile/operation/workorders/'+workorderid,
-        params: {
-          token: encodeURI(localStorage.getItem('token')),
-          status:encodeURI(orderstatus)
-        }
-      })
-      promise.success(function () {
-        commonService.showAlert("壁虎漫步", "工单状态更新成功!");
-      }).error(function () {
-        commonService.showAlert("壁虎漫步", "工单状态更新失败!");
-      })
-
-    }
   })
   .controller('WorklistDetailsCtrl', function ($scope, $rootScope, $q, $stateParams, WallCecko, $http, $ionicLoading, $ionicActionSheet, $cordovaImagePicker, commonService) {
     $scope.workorderid = $stateParams.workorderid;
@@ -191,10 +174,7 @@ angular.module('starter.controllers', [])
       $scope.point_list = data.point_list;
       $scope.point_list.point_id = data.point_list.point_id;
     })
-    $scope.shanghuatype = "完成";
-    $scope.clickshanghuatype = function () {
-      $scope.shanghuatype = "已维修";
-    }
+
     $scope.locationlist = function () {
       $scope.cartype = 1;
     }
@@ -205,6 +185,41 @@ angular.module('starter.controllers', [])
       $rootScope.fixLocationCommon("gaode-map-1", "/mobile/map/workorders/" + $scope.workorderid);
     }
 
+    //更改工单状态
+    $scope.updateworkordersstatus=function () {
+      var orderstatus = "完成";
+      var promise = $http({
+        method: 'PUT',
+        url: WallCecko.api + '/mobile/operation/workorders/' + $scope.workorderid,
+        params: {
+          token: encodeURI(localStorage.getItem('token')),
+          status: encodeURI(orderstatus)
+        }
+      })
+      promise.success(function () {
+        commonService.showAlert("壁虎漫步", "工单状态更新成功!");
+        //跳转到工单列表中
+        $state.go("tab.worklist")
+      }).error(function () {
+        commonService.showAlert("壁虎漫步", "工单状态更新失败!");
+      })
+    }
+      //更改位置点状态
+      $scope.updatepointsstatus=function (pointsid,orderstatus) {
+        var promise = $http({
+          method: 'PUT',
+          url: WallCecko.api + '/mobile/operation/points/'+pointsid,
+          params: {
+            token: encodeURI(localStorage.getItem('token')),
+            status:encodeURI(orderstatus)
+          }
+        })
+        promise.success(function () {
+          commonService.showAlert("壁虎漫步", "位置点状态更新成功!");
+        }).error(function () {
+          commonService.showAlert("壁虎漫步", "位置点状态更新失败!");
+        })
+    }
     //上传图片方法
     $scope.uploadimage = function () {
 
@@ -217,7 +232,7 @@ angular.module('starter.controllers', [])
 
 
       // 获得七牛云上传图片令牌
-      $scope.qiniuupload = function (filename) {
+      $scope.qiniuuploadtoken = function (filename) {
         var promise = $http({
           method: 'POST',
           url: WallCecko.api + '/mobile/qiniu/upload/tokens',
@@ -230,13 +245,32 @@ angular.module('starter.controllers', [])
           }
         })
         promise.success(function (data) {
-          commonService.showAlert("壁虎漫步data.token", data.token);
-          commonService.showAlert("壁虎漫步data.key", data.key);
+         $scope.qiniutoken=data.token;
+         $scope.qiniukey=data.key;
 
         }).error(function () {
           commonService.showAlert("壁虎漫步", "获得七牛云上传图片令牌失败!");
         })
         return promise;
+      }
+      // 图片上传七牛云
+      $scope.qiniuupload = function (filename) {
+        $http({
+          method: 'POST',
+          url: 'http://upload.qiniu.com',
+          data: {
+            token:$scope.qiniutoken,
+            key: $scope.qiniukey,
+            file:filename
+          },
+          headers:{
+            'Content-Type': 'multipart/form-data'
+          }
+        }).success(function () {
+          commonService.showAlert("壁虎漫步", "http://upload.qiniu.com七牛云上传图片成功!");
+        }).error(function () {
+          commonService.showAlert("壁虎漫步", "七牛云上传图片失败!");
+        })
       }
       // 图片上传七牛云成功通知
       $scope.qiniuuploadinfo = function (filename) {
@@ -286,8 +320,11 @@ angular.module('starter.controllers', [])
               var i = filename.lastIndexOf('/');
               filename = filename.substring(i + 1);
             }
-            var promise = $scope.qiniuupload(filename);
-            promise.then(function () {
+            var promise = $scope.qiniuuploadtoken(filename);
+             promise.then(function(){
+               $scope.qiniuupload(filename);
+             })
+             promise.then(function () {
               $scope.qiniuuploadinfo(filename)
             })
 
