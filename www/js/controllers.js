@@ -166,7 +166,7 @@ angular.module('starter.controllers', [])
         url: WallCecko.api + '/mobile/operation/workorders/'+workorderid,
         params: {
           token: encodeURI(localStorage.getItem('token')),
-          status:encodeURIorderstatus
+          status:encodeURI(orderstatus)
         }
       })
       promise.success(function () {
