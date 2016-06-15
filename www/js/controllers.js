@@ -160,7 +160,7 @@ angular.module('starter.controllers', [])
 
 
   })
-  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, $q, $stateParams, WallCecko, $http, $ionicLoading, $ionicActionSheet, $cordovaImagePicker, commonService) {
+  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, $q, $state,$stateParams, WallCecko, $http, $ionicLoading, $ionicActionSheet, $cordovaImagePicker, commonService) {
     $scope.workorderid = $stateParams.workorderid;
     $scope.workstate = $stateParams.workstate;
     var promise = $http({
@@ -256,22 +256,23 @@ angular.module('starter.controllers', [])
       }
       // 图片上传七牛云
       $scope.qiniuupload = function (filename) {
-        var fso = new ActiveXObject("Scripting.FileSystemObject");
-        var file = fso.createtextfile(filename,true);
         $http({
           method: 'POST',
           url: 'http://upload.qiniu.com',
           data: {
             token:$scope.qiniutoken,
             key: $scope.qiniukey,
-            file:file
+            file:filename,
+            crc32:'',
+            accept:''
           },
           headers:{
             'Content-Type': 'multipart/form-data'
           }
         }).success(function () {
           commonService.showAlert("壁虎漫步", "http://upload.qiniu.com七牛云上传图片成功!");
-        }).error(function () {
+        }).error(function (status) {
+          alert("status="+JSON.stringify(status));
           commonService.showAlert("壁虎漫步", "七牛云上传图片失败!");
         })
       }
