@@ -21,7 +21,7 @@
           <p>位置点位号 : {{item.point_id}}
             <span  class="item-note"> <button ng-show="item.status=='空白'" class="light icon ion-camera"
                                                                          ng-click="uploadimage()"> 上传图片
-            </button>   <button class="icon ion-checkmark-round " ng-click="updatepointsstatus(item.point_id,'已维修')"> 完成
+            </button>   <button id="{{'point'+item.point_id}}" class="icon ion-checkmark-round " ng-click="updatepointsstatus(item.point_id,'已维修')"> 完成
             </button> </span>
             <span ng-show="item.status=='已上画'" class="item-note "> <button class="icon ion-camera icon-balanced">
               图片已上传

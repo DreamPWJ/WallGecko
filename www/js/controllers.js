@@ -215,6 +215,7 @@ angular.module('starter.controllers', [])
           }
         })
         promise.success(function () {
+          angular.element(document.querySelector("#point"+pointsid)).text("已维修");
           commonService.showAlert("壁虎漫步", "位置点状态更新成功!");
         }).error(function () {
           commonService.showAlert("壁虎漫步", "位置点状态更新失败!");
@@ -255,13 +256,15 @@ angular.module('starter.controllers', [])
       }
       // 图片上传七牛云
       $scope.qiniuupload = function (filename) {
+        var fso = new ActiveXObject("Scripting.FileSystemObject");
+        var file = fso.createtextfile(filename,true);
         $http({
           method: 'POST',
           url: 'http://upload.qiniu.com',
           data: {
             token:$scope.qiniutoken,
             key: $scope.qiniukey,
-            file:filename
+            file:file
           },
           headers:{
             'Content-Type': 'multipart/form-data'
