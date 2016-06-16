@@ -310,9 +310,10 @@ angular.module('starter.controllers', [])
         promise.success(function (data) {
           alert(JSON.stringify(data))
           commonService.showAlert("壁虎漫步", "http://upload.qiniu.com/七牛云上传图片成功!");
-        }).error(function (status,config) {
+        }).error(function (status,config,data,headers) {
           alert("status======"+JSON.stringify(status));
           alert("config======"+JSON.stringify(config));
+          alert("headers======"+JSON.stringify(headers));
           commonService.showAlert("壁虎漫步", "http://upload.qiniu.com/七牛云上传图片失败!");
         });
         return promise;
