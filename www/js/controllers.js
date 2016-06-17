@@ -160,7 +160,7 @@ angular.module('starter.controllers', [])
 
 
   })
-  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, $q, $state, $stateParams, WallCecko, $http, $ionicLoading, $ionicActionSheet, $cordovaImagePicker, commonService) {
+  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, $state, $stateParams, WallCecko, $http, $ionicLoading, commonService) {
     $scope.workorderid = $stateParams.workorderid;
     $scope.workstate = $stateParams.workstate;
     var promise = $http({
@@ -294,7 +294,7 @@ angular.module('starter.controllers', [])
       }).success(function () {
         commonService.showAlert("壁虎漫步", "七牛云上传图片成功!");
       }).error(function () {
-        commonService.showAlert("壁虎漫步", "上传图片失败!");
+        commonService.showAlert("壁虎漫步", "七牛云上传图片失败!");
       })
     }
     //上传文件
