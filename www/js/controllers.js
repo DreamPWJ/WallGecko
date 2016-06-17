@@ -301,7 +301,7 @@ angular.module('starter.controllers', [])
     $scope.selectFiles = [];
     //开始上传
     var start = function (index, selectFilesItem) {
-      $scope.qiniuuploadfile($scope.qiniutoken, $scope.qiniukey, selectFilesItem.file)
+      $scope.qiniuuploadfile($scope.qiniutoken, $scope.qiniukey, commonService.resizeFile(selectFilesItem.file))
     };
     //选择文件
     $scope.onFileSelect = function ($files,pointid) {
