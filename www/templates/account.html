@@ -5,7 +5,7 @@
 
   <ion-content overflow-scroll="false"  class="stable-bg ">
      <div class="row-wrap balanced-bg  account-login text-center "  >
-       <a ng-click="logout()" class="col icon ion-gear-a  icon-account stable text-right "></a>
+<!--       <a ng-click="logout()" class="col icon ion-gear-a  icon-account stable text-right "></a>-->
        <img ng-src="img/head.jpg" class="border-radius-50 head " alt="头像">
        <p class="light  padding-top" style="font-size: 1.1rem;">{{username}}({{role=='sales'?'销售员':'运营员'}})</p>
      </div>
@@ -17,13 +17,13 @@
       </a>
 
     </div>
-    <div class="list list-borderless">
+<!--    <div class="list list-borderless">
       <a class="item item-icon-left item-icon-right">
         <i class="icon ion-information-circled"></i>
         <h2>软件版本信息</h2>
         <i class="icon ion-ios-arrow-right"></i>
       </a>
-    </div>
+    </div>-->
     <button class="button button-assertive full-image" ng-click="logout()">退出登录</button>
     </div>
   </ion-content>
