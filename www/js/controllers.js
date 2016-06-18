@@ -160,7 +160,7 @@ angular.module('starter.controllers', [])
 
 
   })
-  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, $state, $stateParams, WallCecko, $http, $ionicLoading, commonService) {
+  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, $state,$ionicActionSheet, $stateParams, WallCecko, $http, $ionicLoading, commonService) {
     $scope.workorderid = $stateParams.workorderid;
     $scope.workstate = $stateParams.workstate;
     var promise = $http({
@@ -304,7 +304,7 @@ angular.module('starter.controllers', [])
       $scope.qiniuuploadfile($scope.qiniutoken, $scope.qiniukey, commonService.resizeFile(selectFilesItem.file))
     };
     //选择文件
-    $scope.onFileSelect = function ($files,pointid) {
+    $scope.onFileSelect = function ($files, pointid) {
       var offsetx = $scope.selectFiles.length;
       for (var i = 0; i < $files.length; i++) {
         $scope.selectFiles[i + offsetx] = {
@@ -318,7 +318,36 @@ angular.module('starter.controllers', [])
 
       }
     };
+    //上传图片选择ActionSheet方法
+    $scope.uploadimage = function (pointid) {
 
+      $ionicActionSheet.show({
+        cssClass: 'action-s',
+        titleText: '<b>图片上传</b>',
+        buttons: [
+          {text: '相机'},
+          {text: '图库'}
+        ],
+        cancelText: '关闭',
+        cancel: function () {
+          return true;
+        },
+        buttonClicked: function (index) {
+          switch (index) {
+            case 0:
+        /*      $scope.appendByCamera();*/
+              break;
+            case 1:
+   /*           $scope.pickImage();*/
+              break;
+            default:
+              break;
+          }
+          return true;
+        }
+      });
+
+    }
   })
   .controller('AccountCtrl', function ($scope, $rootScope, WallCecko, $http, $state, commonService) {
     $scope.username = localStorage.getItem('username');
