@@ -23,6 +23,10 @@
   <preference name="ShowSplashScreenSpinner" value="false"/>
   <preference name="FadeSplashScreen" value="false"/>
   <preference name="StatusBarBackgroundColor" value="#33cd5f"/>
+ <!-- ionic 中 弹出键盘遮挡住输入框-->
+  <preference name="Fullscreen" value="false" />
+  <preference name="android-windowSoftInputMode" value="adjustPan"/>
+
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>
