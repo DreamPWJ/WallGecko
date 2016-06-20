@@ -8,6 +8,8 @@
       潘维吉
     </author>
   <content src="index.html"/>
+  <!-- 真机测试用-->
+  <!--  <content src="http://192.168.90.106:8100/#/tab/main"/>-->
   <access origin="*"/>
   <access origin="tel:*" launch-external="yes"/>
   <access origin="sms:*" launch-external="yes"/>
