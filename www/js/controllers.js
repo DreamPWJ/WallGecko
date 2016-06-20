@@ -215,9 +215,10 @@ angular.module('starter.controllers', [])
       })
       promise.success(function () {
         angular.element(document.querySelector("#point" + pointsid)).text("已维修");
-        commonService.showAlert("壁虎漫步", "位置点状态更新成功!");
+        commonService.showToast('位置点状态更新成功!','center');
       }).error(function () {
-        commonService.showAlert("壁虎漫步", "位置点状态更新失败!");
+        commonService.showToast('位置点状态更新失败!','center');
+
       })
     }
 
@@ -475,9 +476,9 @@ angular.module('starter.controllers', [])
         }
       )
       promise.success(function (data) {
-        commonService.showAlert("壁虎漫步", "客户拜访成功!");
+        commonService.showToast('客户拜访成功!','center');
       }).error(function () {
-        commonService.showAlert("壁虎漫步", "客户拜访失败!");
+        commonService.showToast('客户拜访失败!','center');
       })
     }
 
