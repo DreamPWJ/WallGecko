@@ -20,10 +20,13 @@
           <h2>{{item.cell}} </h2>
           <p>位置点位号 : {{item.point_id}}
             <span class="item-note">
+                <button ng-show="item.status=='空白'" ng-click="takePicture(item.point_id)"
+                        class="light icon ion-camera">
+                拍照</button>
               <button ng-show="item.status=='空白'" ng-file-select="onFileSelect($files,{{item.point_id}})"
                       data-multiple="true" title="select file" onclick="this.value = null"
-                      class="light icon ion-camera  btn btn-upload">
-                上传图片</button>
+                      class="light icon ion-images  btn btn-upload">
+                图库</button>
               <button id="{{'point'+item.point_id}}" class="icon ion-checkmark-round "
                       ng-click="updatepointsstatus(item.point_id,'已维修')"> 完成
             </button> </span>
@@ -36,7 +39,9 @@
         <p class="padding-top"></p>
 
       </div>
+
       </div>
+
       <div id="gaode-map-1" ng-show="cartype==2">
       </div>
   </ion-content>

@@ -1,5 +1,5 @@
 angular.module('starter.services', [])
-  .service('commonService', function ($ionicPopup,$q) {
+  .service('commonService', function ($ionicPopup,$q,$cordovaToast) {
      return{
        showAlert :function (title, template)  {
          // 一个提示对话框
@@ -12,6 +12,23 @@ angular.module('starter.services', [])
            alertPopup.then(function (res) {
              console.log(res);
            });
+       },
+       showToast :function (title,flag)  {
+         // 一个原生Toast提示框
+         if(flag=='center'){
+           $cordovaToast.showShortCenter(title).then(function(success) {
+             // success
+           }, function (error) {
+             // error
+           });
+         }else {
+           $cordovaToast.showShortTop(title).then(function(success) {
+           // success
+         }, function (error) {
+           // error
+         });
+         }
+       
        },
         dataURItoBlob :function(dataURI) {
          // convert base64/URLEncoded data component to raw binary data held in a string

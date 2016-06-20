@@ -160,7 +160,7 @@ angular.module('starter.controllers', [])
 
 
   })
-  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, $state,$ionicActionSheet, $stateParams, WallCecko, $http, $ionicLoading, commonService) {
+  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, $state,$ionicActionSheet, $stateParams, WallCecko, $http, $ionicLoading,$cordovaCamera, commonService) {
     $scope.workorderid = $stateParams.workorderid;
     $scope.workstate = $stateParams.workstate;
     var promise = $http({
@@ -272,9 +272,9 @@ angular.module('starter.controllers', [])
       })
       promise.success(function (data) {
         $ionicLoading.hide();
-        commonService.showAlert("壁虎漫步", "上传图片成功!");
+        commonService.showToast('上传图片成功!','center');
       }).error(function () {
-        commonService.showAlert("壁虎漫步", "上传图片失败!");
+        commonService.showToast('上传图片失败!','center');
       });
       return promise;
     }
@@ -335,7 +335,7 @@ angular.module('starter.controllers', [])
         buttonClicked: function (index) {
           switch (index) {
             case 0:
-        /*      $scope.appendByCamera();*/
+          /*    $scope.takePicture();*/
               break;
             case 1:
    /*           $scope.pickImage();*/
@@ -345,6 +345,35 @@ angular.module('starter.controllers', [])
           }
           return true;
         }
+      });
+
+    }
+
+    //拍照
+    $scope.takePicture=function(pointid) {
+      //$cordovaCamera.cleanup();
+
+      var options = {
+        quality: 100,
+        destinationType: Camera.DestinationType.FILE_URI,
+        sourceType: Camera.PictureSourceType.CAMERA,
+        encodingType: Camera.EncodingType.JPEG
+      };
+
+      $cordovaCamera.getPicture(options).then(function (imageUrl) {
+        var uri = imageUrl[0]
+        var filename = uri;
+        if (filename.indexOf('/')) {
+          var i = filename.lastIndexOf('/');
+          filename = filename.substring(i + 1);
+        }
+        var promise = $scope.qiniuuploadtoken(filename, pointid);
+        promise.then(function () {
+          $scope.qiniuuploadfile($scope.qiniutoken, $scope.qiniukey, commonService.resizeFile(commonService.dataURItoBlob(imageUrl)))
+        })
+      }, function (err) {
+        // An error occured. Show a message to the user
+        commonService.showToast('获取照片失败');
       });
 
     }
