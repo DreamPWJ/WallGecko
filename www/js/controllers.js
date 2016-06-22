@@ -160,7 +160,7 @@ angular.module('starter.controllers', [])
 
 
   })
-  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, $state,$ionicActionSheet, $stateParams, WallCecko, $http, $ionicLoading,$cordovaCamera, commonService) {
+  .controller('WorklistDetailsCtrl', function ($scope, $rootScope, $state, $ionicActionSheet, $stateParams, WallCecko, $http, $ionicLoading, $cordovaCamera, commonService) {
     $scope.workorderid = $stateParams.workorderid;
     $scope.workstate = $stateParams.workstate;
     var promise = $http({
@@ -215,9 +215,9 @@ angular.module('starter.controllers', [])
       })
       promise.success(function () {
         angular.element(document.querySelector("#point" + pointsid)).text("已维修");
-        commonService.showToast('位置点状态更新成功!','center');
+        commonService.showToast('位置点状态更新成功!', 'center');
       }).error(function () {
-        commonService.showToast('位置点状态更新失败!','center');
+        commonService.showToast('位置点状态更新失败!', 'center');
 
       })
     }
@@ -256,7 +256,7 @@ angular.module('starter.controllers', [])
         method: 'POST',
         url: 'http://upload.qiniu.com',
         data: {
-          token: qiniutoken,
+          token:qiniutoken,
           key: qiniukey,
           file: file
         },
@@ -273,9 +273,10 @@ angular.module('starter.controllers', [])
       })
       promise.success(function (data) {
         $ionicLoading.hide();
-        commonService.showToast('上传图片成功!','center');
+        commonService.showToast('上传图片成功!', 'center');
       }).error(function () {
-        commonService.showToast('上传图片失败!','center');
+        $ionicLoading.hide();
+        commonService.showToast('上传图片失败!', 'center');
       });
       return promise;
     }
@@ -302,7 +303,7 @@ angular.module('starter.controllers', [])
     $scope.selectFiles = [];
     //开始上传
     var start = function (index, selectFilesItem) {
-      $scope.qiniuuploadfile($scope.qiniutoken, $scope.qiniukey, commonService.resizeFile(selectFilesItem.file))
+      $scope.qiniuuploadfile($scope.qiniutoken, $scope.qiniukey, selectFilesItem.file)
     };
     //选择文件
     $scope.onFileSelect = function ($files, pointid) {
@@ -336,10 +337,10 @@ angular.module('starter.controllers', [])
         buttonClicked: function (index) {
           switch (index) {
             case 0:
-          /*    $scope.takePicture();*/
+              /*    $scope.takePicture();*/
               break;
             case 1:
-   /*           $scope.pickImage();*/
+              /*           $scope.pickImage();*/
               break;
             default:
               break;
@@ -351,26 +352,38 @@ angular.module('starter.controllers', [])
     }
 
     //拍照
-    $scope.takePicture=function(pointid) {
+    $scope.takePicture = function (pointid) {
       //$cordovaCamera.cleanup();
 
       var options = {
-        quality: 100,
+        quality: 50,
+        width: 500,
+        height: 500,
         destinationType: Camera.DestinationType.FILE_URI,
         sourceType: Camera.PictureSourceType.CAMERA,
         encodingType: Camera.EncodingType.JPEG
       };
 
       $cordovaCamera.getPicture(options).then(function (imageUrl) {
-        var uri = imageUrl[0]
-        var filename = uri;
+        var filename = imageUrl;
         if (filename.indexOf('/')) {
           var i = filename.lastIndexOf('/');
           filename = filename.substring(i + 1);
         }
         var promise = $scope.qiniuuploadtoken(filename, pointid);
         promise.then(function () {
-          $scope.qiniuuploadfile($scope.qiniutoken, $scope.qiniukey, commonService.resizeFile(commonService.dataURItoBlob(imageUrl)))
+          //文件url转换成blob文件对象
+          var config = {
+            transformResponse: null,
+            responseType: "arraybuffer"
+          };
+          var blob = {};
+          $http.get(imageUrl, config).then(function (resp) {
+            var arrayBufferView = new Uint8Array(resp.data);
+            blob = new Blob([arrayBufferView], {type: "image/jpeg"});
+            $scope.qiniuuploadfile($scope.qiniutoken, $scope.qiniukey, blob);
+          })
+
         })
       }, function (err) {
         // An error occured. Show a message to the user
@@ -476,9 +489,9 @@ angular.module('starter.controllers', [])
         }
       )
       promise.success(function (data) {
-        commonService.showToast('客户拜访成功!','center');
+        commonService.showToast('客户拜访成功!', 'center');
       }).error(function () {
-        commonService.showToast('客户拜访失败!','center');
+        commonService.showToast('客户拜访失败!', 'center');
       })
     }
 

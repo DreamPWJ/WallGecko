@@ -1,104 +1,67 @@
 angular.module('starter.services', [])
-  .service('commonService', function ($ionicPopup,$q,$cordovaToast) {
-     return{
-       showAlert :function (title, template)  {
-         // 一个提示对话框
-           var alertPopup = $ionicPopup.alert({
-             title: title,
-             template: template,
-             okText: '确定',
-             okType: 'button-balanced'
-           });
-           alertPopup.then(function (res) {
-             console.log(res);
-           });
-       },
-       showToast :function (title,flag)  {
-         // 一个原生Toast提示框
-         if(flag=='center'){
-           $cordovaToast.showShortCenter(title).then(function(success) {
-             // success
-           }, function (error) {
-             // error
-           });
-         }else {
-           $cordovaToast.showShortTop(title).then(function(success) {
-           // success
-         }, function (error) {
-           // error
-         });
-         }
-       
-       },
-        dataURItoBlob :function(dataURI) {
-         // convert base64/URLEncoded data component to raw binary data held in a string
-         var byteString;
-         if (dataURI.split(',')[0].indexOf('base64') >= 0)
-           byteString = atob(dataURI.split(',')[1]);
-         else
-           byteString = unescape(dataURI.split(',')[1]);
+  .service('commonService', function ($ionicPopup, $q, $cordovaToast,$http) {
+    return {
+      showAlert: function (title, template) {
+        // 一个提示对话框
+        var alertPopup = $ionicPopup.alert({
+          title: title,
+          template: template,
+          okText: '确定',
+          okType: 'button-balanced'
+        });
+        alertPopup.then(function (res) {
+          console.log(res);
+        });
+      },
+      showToast: function (title, flag) {
+        // 一个原生Toast提示框
+        if (flag == 'center') {
+          $cordovaToast.showShortCenter(title).then(function (success) {
+            // success
+          }, function (error) {
+            // error
+          });
+        } else {
+          $cordovaToast.showShortTop(title).then(function (success) {
+            // success
+          }, function (error) {
+            // error
+          });
+        }
 
-         // separate out the mime component
-         var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-         // write the bytes of the string to a typed array
-         var ia = new Uint8Array(byteString.length);
-         for (var i = 0; i < byteString.length; i++) {
-           ia[i] = byteString.charCodeAt(i);
-         }
-
-         return new Blob([ia], {
-           type: mimeString
-         });
-       },
-
-     resizeFile : function(file) {
-      var deferred = $q.defer();
-      var img = document.createElement("img");
-      try {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          img.src = e.target.result;
-
-          //resize the image using canvas
-          var canvas = document.createElement("canvas");
-          var ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0);
-          var MAX_WIDTH = 800;
-          var MAX_HEIGHT = 800;
-          var width = img.width;
-          var height = img.height;
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
-            }
-          }
-          canvas.width = width;
-          canvas.height = height;
-          var ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, width, height);
-
-          //change the dataUrl to blob data for uploading to server
-          var dataURL = canvas.toDataURL('image/jpeg');
-          var blob = dataURItoBlob(dataURL);
-
-          deferred.resolve(blob);
+      },
+      getBobFromUrl: function (urlArray) {
+        var defArry = [];
+        var def = $q.defer();
+        var blobArray = [];
+        var config = {
+          transformResponse: null,
+          responseType: "arraybuffer"
         };
-        reader.readAsDataURL(file);
-      } catch (e) {
-        deferred.resolve(e);
+        urlArray.forEach(function (item) {
+          var defer = $q.defer();
+          $http.get(item.url, config).then(function (resp) {
+            var arrayBufferView = new Uint8Array(resp.data);
+            var blob = new Blob([arrayBufferView], {type: "image/jpeg"});
+            blobArray.push({
+              key: item.key,
+              blobData: blob
+            });
+            defer.resolve(blob);
+          }, function () {
+            defer.reject('获取图片失败');
+          });
+          defArry.push(defer.promise);
+        });
+
+        $q.all(defArry).then(function () {
+          def.resolve(blobArray);
+        }, function () {
+          def.reject('获取图片失败');
+        });
+        return def.promise;
       }
-      return deferred.promise;
-
     }
-
-  }
   })
   .service('encodingService', function () {
     return {
