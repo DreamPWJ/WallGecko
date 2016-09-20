@@ -11,6 +11,7 @@
   <!-- 真机测试用-->
   <!--    <content src="http://192.168.90.106:8100"/>-->
   <access origin="*"/>
+  <allow-intent href="tel:*"/>
   <access origin="tel:*" launch-external="yes"/>
   <access origin="sms:*" launch-external="yes"/>
   <access origin="mailto:*" launch-external="yes"/>
